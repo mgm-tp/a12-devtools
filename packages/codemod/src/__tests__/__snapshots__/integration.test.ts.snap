@@ -1,0 +1,214 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`Factory Integration Tests > CLI --help > should display help output > help-output 1`] = `
+test-codemod <recipe-id-or-version> <tsconfig-path>
+
+Test codemod CLI for integration testing
+
+You can specify either:
+• A recipe ID to run a specific recipe. Use --list to see available recipes
+• The version of the target package is migrating to (e.g., 1.2.0) to run all applicable recipes for
+that version
+
+Positionals:
+  recipe-id-or-version  The ID of a specific recipe to run, or a target version to run all matching
+                        recipes                                                             [string]
+  tsconfig-path         Path to a tsconfig file or a folder containing tsconfig.json (absolute or
+                        relative to the current working directory)                          [string]
+
+Options:
+      --help         Show help                                                             [boolean]
+      --version      Show version number                                                   [boolean]
+  -l, --list         List all available recipes                           [boolean] [default: false]
+  -i, --interactive  Run in interactive mode to select a recipe           [boolean] [default: false]
+      --git-check    Check if git working directory is clean before running the recipe
+                                                                           [boolean] [default: true]
+  -r, --recursive    Recursively walk through sub directories up to depth      [number] [default: 0]
+`;
+
+exports[`Factory Integration Tests > CLI --list > should list all recipes > list-output 1`] = `
+Available recipes:
+• migrate-api (^2.0.0) - Migrates oldApi to newApi 
+• add-types (^3.2.0) - Adds type annotations 
+• rename-imports (>=2.0.0 <3.0.0) - Renames legacy imports to modern imports 
+• update-config (>=2.5.0) - Updates configuration format 
+`;
+
+exports[`Factory Integration Tests > CLI --list > should list recipes with -l flag > list-output-short-flag 1`] = `
+Available recipes:
+• migrate-api (^2.0.0) - Migrates oldApi to newApi 
+• add-types (^3.2.0) - Adds type annotations 
+• rename-imports (>=2.0.0 <3.0.0) - Renames legacy imports to modern imports 
+• update-config (>=2.5.0) - Updates configuration format 
+`;
+
+exports[`Factory Integration Tests > CLI error handling > should show error for invalid tsconfig path > error-invalid-tsconfig-path 1`] = `
+
+Error: Path does not exist: /non/existent/path/tsconfig.json
+`;
+
+exports[`Factory Integration Tests > CLI error handling > should show error for non-existent recipe > error-recipe-not-found 1`] = `
+
+Error: Recipe "non-existent-recipe" not found. Did you mean "migrate-api" or "add-types"?
+`;
+
+exports[`Factory Integration Tests > CLI error handling > should show error when tsconfig-path is missing > error-missing-tsconfig 1`] = `
+
+Error: tsconfig path is required when running a recipe or migrating to a version. See more info with --help.
+`;
+
+exports[`Factory Integration Tests > CLI error handling > should suggest similar recipe for typo with 1 character difference > error-typo-suggestion 1`] = `
+
+Error: Recipe "migrat-api" not found. Did you mean "migrate-api" or "add-types"?
+`;
+
+exports[`Factory Integration Tests > CLI recipe execution > should execute recipe and transform files > recipe-execution-stdout 1`] = `
+
+→ Running recipe migrate-api against tsconfig: /ROOT/temp/execute-recipe-{hash}/tsconfig.json
+
+✓ Run recipe migrate-api successfully. Remember to run your linters and formatters as they are not applied automatically.
+Please review the changes carefully. Codemods may not cover all scenarios and may introduce unintended modifications.
+`;
+
+exports[`Factory Integration Tests > CLI recipe execution > should execute recipe and transform files > transformed-app-file 1`] = `
+export function process(data: unknown) {
+	return newApi.transform(data);
+}
+
+export const result = newApi.compute(42);
+
+`;
+
+exports[`Factory Integration Tests > CLI recipe execution > should handle multiple files > file1-transformed 1`] = `
+export const file1 = newApi.method1();
+
+`;
+
+exports[`Factory Integration Tests > CLI recipe execution > should handle multiple files > file2-transformed 1`] = `
+export const file2 = newApi.method2();
+
+`;
+
+exports[`Factory Integration Tests > CLI recipe execution > should handle multiple files > file3-transformed 1`] = `
+export const file3 = newApi.method3();
+
+`;
+
+exports[`Factory Integration Tests > CLI recipe execution > should log execution progress > execution-progress-logs 1`] = `
+
+→ Running recipe migrate-api against tsconfig: /ROOT/temp/execution-logs-{hash}/tsconfig.json
+
+✓ Run recipe migrate-api successfully. Remember to run your linters and formatters as they are not applied automatically.
+Please review the changes carefully. Codemods may not cover all scenarios and may introduce unintended modifications.
+`;
+
+exports[`Factory Integration Tests > CLI recipe execution > should recursively apply with recursive  > file1-non-transformed 1`] = `
+export const file1 = newApi.method1();
+
+`;
+
+exports[`Factory Integration Tests > CLI recipe execution > should recursively apply with recursive  > file2-transformed 1`] = `
+export const file2 = newApi.method2();
+
+`;
+
+exports[`Factory Integration Tests > CLI recipe execution > should recursively apply with recursive enabled > file1-non-transformed 1`] = `
+export const file1 = newApi.method1();
+
+`;
+
+exports[`Factory Integration Tests > CLI recipe execution > should recursively apply with recursive enabled > file1-transformed 1`] = `
+export const file1 = newApi.method1();
+
+`;
+
+exports[`Factory Integration Tests > CLI recipe execution > should recursively apply with recursive enabled > file2-transformed 1`] = `
+export const file2 = newApi.method2();
+
+`;
+
+exports[`Factory Integration Tests > CLI recipe execution > should recursively apply with recursive enabled > file2-transformed 2`] = `
+export const file2 = newApi.method2();
+
+`;
+
+exports[`Factory Integration Tests > CLI recipe execution > should recursively apply with recursive enabled > file3-transformed 1`] = `
+export const file3 = newApi.method3();
+
+`;
+
+exports[`Factory Integration Tests > CLI recipe execution > should respect gitignore with recursive enabled > file1-non-transformed 1`] = `
+/*
+ * SPDX-License-Identifier: EUPL-1.2 OR LicenseRef-commercial
+ *
+ * Copyright (c) 2012-2026 mgm technology partners GmbH
+ *
+ * Dual License
+ * ------------
+ * This source file is part of the mgm A12 Platform and available under
+ * a choice of two different licenses:
+ *
+ * 1. Open-Source License – EUPL v1.2
+ *    You may redistribute and/or modify this file under the terms of the
+ *    European Union Public License, version 1.2 - see https://eupl.eu/.
+ *
+ * 2. Commercial License
+ *    Alternatively, you may obtain a commercial license from
+ *    mgm technology partners GmbH, that permits use of this software
+ *    under different terms (including support and maintenance services).
+ *
+ *    Please contact a12-license@mgm-tp.com for more information.
+ *
+ * You must select and comply with exactly one of the above license options.
+ *
+ * Warranty Disclaimer (applies to either option)
+ * ----------------------------------------------
+ * THIS SOFTWARE IS PROVIDED “AS IS” AND WITHOUT WARRANTY OF ANY KIND,
+ * WHETHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
+ * OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+ * NON-INFRINGEMENT, EXCEPT WHERE SUCH DISCLAIMERS ARE HELD TO BE
+ * LEGALLY INVALID. SEE THE RESPECTIVE LICENSE TEXT FOR DETAILS.
+ */
+
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-nocheck
+
+export const file1 = oldApi.method1();
+
+`;
+
+exports[`Factory Integration Tests > CLI recipe execution > should respect gitignore with recursive enabled > file2-transformed 1`] = `
+export const file2 = newApi.method2();
+
+`;
+
+exports[`Factory Integration Tests > CLI version-based migration > should run all matching recipes for a target version > version-migration-output 1`] = `
+
+→ Found 3 recipe(s) for version 2.5.0:
+  • migrate-api (^2.0.0) - Migrates oldApi to newApi 
+  • rename-imports (>=2.0.0 <3.0.0) - Renames legacy imports to modern imports 
+  • update-config (>=2.5.0) - Updates configuration format 
+
+→ Running recipe migrate-api
+  Migrates oldApi to newApi
+  ✓ Completed
+
+→ Running recipe rename-imports
+  Renames legacy imports to modern imports
+  ✓ Completed
+
+→ Running recipe update-config
+  Updates configuration format
+  ✓ Completed
+
+
+─────────────────────────────────────────
+✓ Completed: 3
+Remember to run your linters and formatters as they are not applied automatically.
+Please review the changes carefully. Codemods may not cover all scenarios and may introduce unintended modifications.
+`;
+
+exports[`Factory Integration Tests > CLI version-based migration > should show error when no recipes match the target version > error-no-recipes-for-version 1`] = `
+
+Error: No recipes found for target version "1.0.0". Use --list to see available recipes and their supported versions.
+`;

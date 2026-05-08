@@ -1,0 +1,7 @@
+{
+	"notAHeader": {
+		"id": "invalid",
+		"someOtherField": "value"
+	},
+	"content": {}
+}

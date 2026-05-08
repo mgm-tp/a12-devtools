@@ -1,0 +1,37 @@
+{
+	"name": "@com.mgmtp.a12.devtools/why-did-you-render",
+	"version": "2.1.0",
+	"type": "module",
+	"description": "Setup tools for WhyDidYouRender",
+	"author": "mgm technology partners",
+	"license": "(EUPL-1.2 OR LicenseRef-commercial)",
+	"scripts": {
+		"clean": "git clean -fx .",
+		"compile": "tsc"
+	},
+	"dependencies": {
+		"@welldone-software/why-did-you-render": "catalog:"
+	},
+	"devDependencies": {
+		"@com.mgmtp.a12.devtools/tsconfig": "workspace:^",
+		"@types/node": "catalog:",
+		"@types/react": "catalog:",
+		"eslint": "catalog:",
+		"prettier": "catalog:",
+		"typescript": "catalog:",
+		"react": "catalog:"
+	},
+	"peerDependencies": {
+		"react": "catalog:peers"
+	},
+	"files": [
+		"src",
+		"lib",
+		"cyclonedx.json",
+		"LICENSE",
+		"NOTICE",
+		"THIRD_PARTY_NOTICES",
+		"licenses"
+	],
+	"exports": "./lib/index.js"
+}

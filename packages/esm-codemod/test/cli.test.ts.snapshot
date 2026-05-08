@@ -1,0 +1,231 @@
+exports[`esm-codemod > basic 1`] = `
+// Stdout
+
+[LOG] === Migrating file ROOT/temp/basic/main.ts ===
+
+[LOG] === Migrating file ROOT/temp/basic/math/index.ts ===
+
+[LOG] === Migrating file ROOT/temp/basic/math/multiple.ts ===
+
+[LOG] === Migrating file ROOT/temp/basic/math/sum.ts ===
+
+Files   :  2
+Migrated:  7
+Skipped :  7
+Error   :  0
+Done
+`;
+
+exports[`esm-codemod > basic 2`] = `
+// File: ./basic/data.json
+{
+	"name": "A12"
+}
+`;
+
+exports[`esm-codemod > basic 3`] = `
+// File: ./basic/main.ts
+import { inspect } from "node:util";
+import Fs from "node:fs";
+
+import { type ActionCreator, actionCreatorFactory } from "typescript-fsa";
+import { css, styled } from "styled-components";
+import React from "react/jsx-runtime";
+
+import { HashMap } from "@com.mgmtp.a12.utils/utils-collections";
+import { depthFirstSearch } from "@com.mgmtp.a12.utils/utils-collections/lib/search/index.js";
+import { DirectedGraph } from "@com.mgmtp.a12.utils/utils-collections/lib/DirectedGraph.js";
+
+import { sum } from "./math/index.js";
+import { multiple } from "./math/multiple.js";
+import { ONE } from "./one.js";
+import Data from "./data.json";
+
+console.log(React);
+
+console.log(Fs);
+console.log(ONE);
+console.log(inspect(Data));
+
+console.log(sum(1, 2));
+console.log(multiple(3, 4));
+
+console.log(HashMap);
+console.log(depthFirstSearch);
+console.log(DirectedGraph);
+
+console.log(actionCreatorFactory);
+console.log({} as ActionCreator<unknown>);
+
+console.log(
+  styled.div(() => {
+    return css\`
+      width: 100%;
+    \`;
+  }),
+);
+
+`;
+
+exports[`esm-codemod > basic 4`] = `
+// File: ./basic/one.js
+export const ONE = "1";
+
+`;
+
+exports[`esm-codemod > basic 5`] = `
+// File: ./basic/math/index.ts
+export * from "./sum.js";
+export * from "./multiple.js";
+
+`;
+
+exports[`esm-codemod > basic 6`] = `
+// File: ./basic/math/multiple.ts
+export function multiple(a: number, b: number) {
+  return a * b;
+}
+
+`;
+
+exports[`esm-codemod > basic 7`] = `
+// File: ./basic/math/sum.ts
+export function sum(a: number, b: number) {
+  return a + b;
+}
+
+`;
+
+exports[`esm-codemod > debug 1`] = `
+// Stdout
+[DEB] {
+  "aliases": {},
+  "ignorePackages": [],
+  "ignoreFiles": [],
+  "debug": true,
+  "ignoreExtensions": [
+    ".css",
+    ".svg"
+  ]
+}
+
+[LOG] === Migrating file ROOT/temp/basic/main.ts ===
+[DEB] Migrating import: "node:util"
+[DEB] Migrating import: "fs"
+[DEB] Detect library import
+[DEB] Detect builtin Node module => Prepend "node:"
+[DEB] Migrated import:  node:fs
+[DEB] Migrating import: "typescript-fsa"
+[DEB] Detect library import
+[DEB] Import from package name => Skip
+[DEB] Migrating import: "styled-components"
+[DEB] Detect library import
+[DEB] Import from package name => Skip
+[DEB] Migrating import: "react/jsx-runtime"
+[DEB] Detect library import
+[DEB] Detect 'exports' field
+[DEB] Migrating import: "@com.mgmtp.a12.utils/utils-collections"
+[DEB] Detect library import
+[DEB] Import from package name => Skip
+[DEB] Migrating import: "@com.mgmtp.a12.utils/utils-collections/lib/search"
+[DEB] Detect library import
+[DEB] Checking js file: ROOT/node_modules/@com.mgmtp.a12.utils/utils-collections/lib/search.js
+[DEB] Checking directory: ROOT/node_modules/@com.mgmtp.a12.utils/utils-collections/lib/search
+[DEB] Found index.js file => Append '/index.js'
+[DEB] Migrated import:  @com.mgmtp.a12.utils/utils-collections/lib/search/index.js
+[DEB] Migrating import: "@com.mgmtp.a12.utils/utils-collections/lib/DirectedGraph"
+[DEB] Detect library import
+[DEB] Checking js file: ROOT/node_modules/@com.mgmtp.a12.utils/utils-collections/lib/DirectedGraph.js
+[DEB] Found js file: ROOT/node_modules/@com.mgmtp.a12.utils/utils-collections/lib/DirectedGraph.js => Append '.js'
+[DEB] Migrated import:  @com.mgmtp.a12.utils/utils-collections/lib/DirectedGraph.js
+[DEB] Migrating import: "./math"
+[DEB] Detect relative import
+[DEB] Checking file: ROOT/temp/basic/math.ts
+[DEB] Checking file: ROOT/temp/basic/math.tsx
+[DEB] Checking file: ROOT/temp/basic/math/index.ts
+[DEB] Found file: ROOT/temp/basic/math/index.ts
+[DEB] Migrated import:  ./math/index.js
+[DEB] Migrating import: "./math/multiple"
+[DEB] Detect relative import
+[DEB] Checking file: ROOT/temp/basic/math/multiple.ts
+[DEB] Found file: ROOT/temp/basic/math/multiple.ts
+[DEB] Migrated import:  ./math/multiple.js
+[DEB] Migrating import: "./one.js"
+[DEB] Migrating import: "./data.json"
+
+[LOG] === Migrating file ROOT/temp/basic/math/index.ts ===
+[DEB] Migrating export: "./sum"
+[DEB] Detect relative import
+[DEB] Checking file: ROOT/temp/basic/math/sum.ts
+[DEB] Found file: ROOT/temp/basic/math/sum.ts
+[DEB] Migrated export:  ./sum.js
+[DEB] Migrating export: "./multiple"
+[DEB] Detect relative import
+[DEB] Checking file: ROOT/temp/basic/math/multiple.ts
+[DEB] Found file: ROOT/temp/basic/math/multiple.ts
+[DEB] Migrated export:  ./multiple.js
+
+[LOG] === Migrating file ROOT/temp/basic/math/multiple.ts ===
+
+[LOG] === Migrating file ROOT/temp/basic/math/sum.ts ===
+
+Files   :  2
+Migrated:  7
+Skipped :  7
+Error   :  0
+Done
+`;
+
+exports[`esm-codemod > help 1`] = `
+// Stdout
+Usage: esm-codemod <path> [options]
+
+<path> can be an absolute path to the migrating file or directory
+
+Options:
+  --version            Show version number                             [boolean]
+  --alias              Comma-separated tsconfig alias mappings:
+                       alias1=absoluteFilePath1,alias2=absoluteFilePath2[string]
+  --ignore-packages    Comma-separated list of import packages to ignore
+                                                          [string] [default: []]
+  --ignore-files       Comma-separated file patterns to ignore. E.g:
+                       '/**/*.skip-test/*'                [string] [default: []]
+  --ignore-extensions  Comma-separated list of import extensions to ignore. E.g:
+                       '.png,.svg'               [string] [default: ".css,.svg"]
+  --debug              Enable debug mode              [boolean] [default: false]
+  --help               Show help                                       [boolean]
+`;
+
+exports[`esm-codemod > not installed package 1`] = `
+// Stdout
+[DEB] {
+  "aliases": {},
+  "ignorePackages": [],
+  "ignoreFiles": [],
+  "debug": true,
+  "ignoreExtensions": [
+    ".css",
+    ".svg"
+  ]
+}
+
+[LOG] === Migrating file ROOT/temp/error/main.ts ===
+[DEB] Migrating import: "reatc"
+[DEB] Detect library import
+[DEB] Migrating import: "react/jsx"
+[DEB] Detect library import
+[DEB] Detect 'exports' field
+[DEB] Migrating import: "@com.mgmtp.a12.utils/utils-collections/notFound"
+[DEB] Detect library import
+[DEB] Checking js file: ROOT/node_modules/@com.mgmtp.a12.utils/utils-collections/notFound.js
+[DEB] Checking directory: ROOT/node_modules/@com.mgmtp.a12.utils/utils-collections/notFound
+
+ROOT/temp/error/main.ts:1:0 Cannot find library with name 'reatc'. Please verify that the package is declared at least as devDependency.
+ROOT/temp/error/main.ts:2:0 Can not find expose API with path './jsx' in package 'react', available paths: '.', './package.json', './jsx-runtime', './jsx-dev-runtime', './compiler-runtime'
+ROOT/temp/error/main.ts:4:0 Cannot migrate import: @com.mgmtp.a12.utils/utils-collections/notFound
+Files   :  1
+Migrated:  0
+Skipped :  0
+Error   :  3
+Done
+`;

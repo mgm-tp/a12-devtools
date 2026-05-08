@@ -1,0 +1,35 @@
+plugins {
+    id 'groovy'
+    id 'java-gradle-plugin'
+    id 'maven-publish'
+}
+
+apply from: "${rootDir}/gradle-plugins/plugin-common.gradle"
+
+dependencies {
+    implementation libs.jackson.core
+
+    testImplementation libs.spock.core
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+}
+
+test {
+    useJUnitPlatform()
+    testLogging {
+        events 'passed', 'skipped', 'failed'
+        exceptionFormat = 'full'
+    }
+}
+
+gradlePlugin {
+    plugins {
+        prepareModels {
+            id = 'com.mgmtp.a12.devtools.plugins.prepare-models'
+            displayName = "A12 Prepare Models Plugin"
+            description = "Prepares a runtime model workspace"
+            tags.set(['a12', 'model', 'gradle', 'plugin', 'development'])
+
+            implementationClass = 'com.mgmtp.a12.devtools.gradle.plugins.models.PrepareModelsPlugin'
+        }
+    }
+}

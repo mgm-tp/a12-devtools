@@ -1,0 +1,48 @@
+plugins {
+    id 'com.diffplug.spotless' version '8.1.0'
+    id 'org.cyclonedx.bom' version '3.0.1' apply false
+}
+
+import org.cyclonedx.model.ExternalReference
+
+if (file('publish/build.gradle').exists()) {
+    apply from: 'publish/build.gradle'
+}
+
+subprojects { subproj ->
+    apply plugin: 'com.diffplug.spotless'
+
+     if (subproj.name != 'security') {
+        apply plugin: 'org.cyclonedx.bom'
+
+        tasks.named('cyclonedxDirectBom') {
+            jsonOutput.set(subproj.file("cyclonedx.json"))
+            xmlOutput.unsetConvention()
+
+            includeBuildSystem = false
+
+            externalReferences = [
+                new ExternalReference(type: ExternalReference.Type.VCS, url: "https://git.geta12.com")
+            ]
+        }
+    }
+
+    spotless {
+        if (subproj.name == 'sharedLibrary') {
+            groovy {
+                target 'src/**/*.groovy', 'test/**/*.groovy', 'vars/**/*.groovy'
+                importOrder('java', 'com.mgmtp.a12')
+                greclipse().configFile(subproj.file('config/formatter.properties'))
+            }
+        } else {
+            groovy {
+                target 'src/**/*.groovy'
+                licenseHeaderFile rootProject.file('license_header.txt')
+            }
+            java {
+                target 'src/**/*.java'
+                licenseHeaderFile rootProject.file('license_header.txt')
+            }
+        }
+    }
+}

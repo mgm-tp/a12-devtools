@@ -1,0 +1,37 @@
+{
+	"compilerOptions": {
+		"declaration": true,
+		"declarationMap": true,
+		"forceConsistentCasingInFileNames": true,
+		"target": "ES2024",
+		"lib": [
+			"DOM",
+			"DOM.Iterable",
+			//"DOM.AsyncIterable", -> not supported by safari
+			"ES2023",
+			"ES2024.arraybuffer",
+			"ES2024.collection",
+			"ES2024.object",
+			"ES2024.promise",
+			"ES2024.regexp",
+			//"ES2024.sharedmemory", -> not supported by firefox
+			"ES2024.string"
+		],
+		"module": "NodeNext",
+		"moduleResolution": "NodeNext",
+		"newLine": "LF",
+		"noEmitOnError": true,
+		"noErrorTruncation": true,
+		"noFallthroughCasesInSwitch": true,
+		"noImplicitReturns": true,
+		"noUnusedLocals": true,
+		"noUnusedParameters": false,
+		"preserveConstEnums": true,
+		"sourceMap": true,
+		"strict": true,
+		"esModuleInterop": true,
+		"resolveJsonModule": true,
+		"stripInternal": true,
+		"jsx": "react-jsx"
+	}
+}

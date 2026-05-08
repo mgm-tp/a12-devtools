@@ -1,0 +1,51 @@
+rootProject.name = 'devtools'
+
+enableFeaturePreview "STABLE_CONFIGURATION_CACHE"
+
+dependencyResolutionManagement {
+    versionCatalogs {
+        libs {
+            version('spock-core', '2.4-groovy-4.0')
+            version('jackson-core', '2.20.0')
+            version('groovy-all', '4.0.28')
+
+            library('spock-core', 'org.spockframework', 'spock-core').versionRef('spock-core')
+            library('jackson-core', 'com.fasterxml.jackson.core', 'jackson-core').versionRef('jackson-core')
+            library('groovy-all', 'org.apache.groovy', 'groovy-all').versionRef('groovy-all')
+        }
+
+        if (file("internal").exists()) {
+            a12Plugins {
+                version('artifact-publish', '0.4.0-rc.1')
+                library('artifact-publish', 'com.mgmtp.a12.bd.artifact-publish', 'com.mgmtp.a12.bd.artifact-publish.gradle.plugin').versionRef('artifact-publish')
+            }
+        }
+    }
+}
+
+include 'gradle-plugins:build-utilities'
+include 'gradle-plugins:prepare-models'
+
+if (file("internal").exists()) {
+    include 'internal'
+}
+
+if (file("sharedLibrary").exists()) {
+    include 'sharedLibrary'
+}
+
+if (file("gradle-plugins/performance-test").exists()) {
+    include 'gradle-plugins:performance-test'
+}
+
+if (file("gradle-plugins/sbom").exists()) {
+    include 'gradle-plugins:sbom'
+}
+
+if (file("gradle-plugins/sbom-cleaner").exists()) {
+    include 'gradle-plugins:sbom-cleaner'
+}
+
+file('packages').eachDir { dir ->
+    include "packages:${dir.name}"
+}

@@ -1,0 +1,42 @@
+{
+	"name": "@com.mgmtp.a12.devtools/build-tools",
+	"version": "1.1.0",
+	"type": "module",
+	"description": "A collection of a12 build tools",
+	"author": "mgm technology partners",
+	"license": "(EUPL-1.2 OR LicenseRef-commercial)",
+	"scripts": {
+		"clean": "git clean -fx .",
+		"compile": "tsc",
+		"watch": "tsc -w",
+		"test": "node --test \"lib/test/*.spec.js\""
+	},
+	"bin": {
+		"devtools": "./lib/main/cli.js"
+	},
+	"dependencies": {
+		"commander": "catalog:",
+		"glob": "catalog:"
+	},
+	"devDependencies": {
+		"@com.mgmtp.a12.devtools/tsconfig": "workspace:^",
+		"@types/node": "catalog:",
+		"typescript": "catalog:"
+	},
+	"peerDependencies": {
+		"typescript": "catalog:peers"
+	},
+	"files": [
+		"lib/main",
+		"lib/utils",
+		"src/main",
+		"src/utils",
+		"cyclonedx.json",
+		"LICENSE",
+		"NOTICE",
+		"THIRD_PARTY_NOTICES",
+		"licenses"
+	],
+	"exports": null,
+	"minimumTypescriptVersion": "5.8.2"
+}

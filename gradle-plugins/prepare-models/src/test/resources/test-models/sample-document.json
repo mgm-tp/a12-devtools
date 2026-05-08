@@ -1,0 +1,12 @@
+{
+	"header": {
+		"id": "sample-document",
+		"modelType": "document",
+		"modelVersion": "1.0.0",
+		"locales": [],
+		"labels": [],
+		"annotations": [],
+		"modelReferences": []
+	},
+	"content": {}
+}

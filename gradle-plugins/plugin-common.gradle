@@ -1,0 +1,89 @@
+// Common configuration for all A12 Gradle plugins
+ext {
+    computePluginVersion = {
+        def versionFile = project.file('version.txt')
+        if (versionFile.exists()) {
+            try {
+                return versionFile.text.trim()
+            } catch (Exception e) {
+                logger.warn("Failed to read version from version.txt: ${e.message}")
+            }
+        }
+
+        // Fallback to SNAPSHOT if not found
+        return 'SNAPSHOT'
+    }
+}
+
+group = 'com.mgmtp.a12.devtools.plugins'
+version = computePluginVersion()
+
+java {
+    withSourcesJar()
+    withJavadocJar()
+
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(25)
+    }
+}
+
+tasks.withType(JavaCompile).configureEach {
+    options.release.set(21)
+}
+
+tasks.withType(GroovyCompile).configureEach {
+    // groovy does not have a --release option
+    sourceCompatibility = JavaVersion.VERSION_21
+    targetCompatibility = JavaVersion.VERSION_21
+}
+
+tasks.withType(Jar).configureEach {
+    into('META-INF') {
+        from(rootProject.file('LICENSE'))
+        from(rootProject.file('NOTICE'))
+        from(rootProject.file('THIRD_PARTY_NOTICES'))
+        from(rootProject.file('licenses')) {
+            into('licenses')
+        }
+        from(tasks.named('cyclonedxDirectBom').get().jsonOutput) {
+            rename { 'cyclonedx.json' }
+        }
+    }
+}
+
+publishing {
+    publications {
+        withType(MavenPublication) {
+            pom {
+                licenses {
+                    license {
+                        name = 'EUPL-1.2 OR LicenseRef-Commercial'
+                        comments = 'See LICENSE artifact published alongside this module'
+                    }
+                }
+                organization {
+                    name = 'mgm technology partners GmbH'
+                    url = 'https://www.mgm-tp.com'
+                }
+            }
+
+            // Add LICENSE file as artifact
+            artifact(rootProject.file('LICENSE')) {
+                classifier = 'license'
+                extension = 'txt'
+            }
+
+            // Add NOTICE file as artifact
+            artifact(rootProject.file('NOTICE')) {
+                classifier = 'notice'
+                extension = 'txt'
+            }
+
+            // Add CycloneDX SBOM as artifact
+            artifact(tasks.named('cyclonedxDirectBom').get().jsonOutput) {
+                classifier = 'cyclonedx'
+                extension = 'json'
+            }
+        }
+    }
+}

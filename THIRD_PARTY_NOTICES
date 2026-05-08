@@ -1,0 +1,222 @@
+THIRD_PARTY_NOTICES
+
+Component: A12 devtools
+Generated: 2026-03-09 for mgm A12 Platform 2025.06-ext5
+
+The mgm A12 Platform is developed by mgm technology partners GmbH.
+
+https://www.mgm-tp.com.
+
+This file lists third-party software components included in this
+distribution of the mgm A12 Platform and the licenses that apply
+to them.
+
+Component Overview
+-------------------
+
+The following third-party components are included in this distribution:
+
+
+
+- chalk 5.6.2, licensed under MIT
+	Copyright (c) Sindre Sorhus <sindresorhus@gmail.com> (https://sindresorhus.com)
+	Source: https://github.com/chalk/chalk
+- commander 14.0.3, licensed under MIT
+	Copyright (c) 2011 TJ Holowaychuk <tj@vision-media.ca>
+	Source: https://github.com/tj/commander.js
+- @com.mgmtp.a12.utils/utils-collections 5.8.1, licensed under EUPL v1.2
+	Copyright (C) 2012-2026 mgm technology partners GmbH
+	Source: https://github.com/mgm-tp
+- eslint 9.39.2, licensed under MIT
+	Copyright OpenJS Foundation and other contributors, <www.openjsf.org>
+	Source: https://github.com/eslint/eslint
+- @eslint/js 9.39.2, licensed under MIT
+	Copyright OpenJS Foundation and other contributors, <www.openjsf.org>
+	Source: https://github.com/eslint/eslint
+- eslint-plugin-import 2.32.0, licensed under MIT
+	Copyright (c) 2015 Ben Mosher
+	Source: https://github.com/import-js/eslint-plugin-import
+- eslint-plugin-notice 1.0.0, licensed under MIT
+	Copyright (c) 2017 Nick Deis
+	Source: https://github.com/nickdeis/eslint-plugin-notice
+- eslint-plugin-react 7.37.5, licensed under MIT
+	Copyright (c) 2014 Yannick Croissant
+	Source: https://github.com/jsx-eslint/eslint-plugin-react
+- eslint-plugin-react-hooks 7.0.1, licensed under MIT
+	Copyright (c) Meta Platforms, Inc. and affiliates
+	Source: https://github.com/facebook/react/tree/main/packages/eslint-plugin-react-hooks
+- execa 9.6.1, licensed under MIT
+	Copyright (c) Sindre Sorhus <sindresorhus@gmail.com> (https://sindresorhus.com)
+	Source: https://github.com/sindresorhus/execa
+- fast-deep-equal 3.1.3, licensed under MIT
+	Copyright (c) 2017 Evgeny Poberezkin
+	Source: https://github.com/epoberezkin/fast-deep-equal
+- find-up 8.0.0, licensed under MIT
+	Copyright (c) Sindre Sorhus <sindresorhus@gmail.com> (https://sindresorhus.com)
+	Source: https://github.com/sindresorhus/find-up
+- glob 13.0.1, licensed under BlueOak-1.0.0
+	
+	Source: https://github.com/isaacs/node-glob
+- globals 17.3.0, licensed under MIT
+	Copyright (c) Sindre Sorhus <sindresorhus@gmail.com> (https://sindresorhus.com)
+	Source: https://github.com/sindresorhus/globals
+- @inquirer/prompts 8.2.0, licensed under MIT
+	Copyright (c) 2025 Simon Boudrias
+	Source: https://github.com/SBoudrias/Inquirer.js
+- @microsoft/api-extractor 7.56.3, licensed under MIT
+	Copyright (c) Microsoft Corporation. All rights reserved
+	Source: https://github.com/microsoft/rushstack/tree/main/apps/api-extractor
+- package-up 5.0.0, licensed under MIT
+	Copyright (c) Sindre Sorhus <sindresorhus@gmail.com> (https://sindresorhus.com)
+	Source: https://github.com/sindresorhus/package-up
+- picomatch 4.0.3, licensed under MIT
+	Copyright (c) 2017-present, Jon Schlinkert
+	Source: https://github.com/micromatch/picomatch
+- prettier 3.8.1, licensed under MIT
+	Copyright © James Long and contributors
+	Source: https://github.com/prettier/prettier
+- react 19.1.0, licensed under MIT
+	Copyright (c) Meta Platforms, Inc. and affiliates
+	Source: https://github.com/facebook/react
+- react 19.2.4, licensed under MIT
+	Copyright (c) Meta Platforms, Inc. and affiliates
+	Source: https://github.com/facebook/react
+- semver 7.7.4, licensed under ISC
+	Copyright (c) Isaac Z. Schlueter and Contributors
+	Source: https://github.com/npm/node-semver
+- strip-ansi 7.1.2, licensed under MIT
+	Copyright (c) Sindre Sorhus <sindresorhus@gmail.com> (https://sindresorhus.com)
+	Source: https://github.com/chalk/strip-ansi
+- styled-components 6.1.15, licensed under MIT
+	Copyright (c) 2016-present Glen Maddern and Maximilian Stoiber
+	Source: https://github.com/styled-components/styled-components
+- @testing-library/dom 10.4.1, licensed under MIT
+	Copyright (c) 2017 Kent C. Dodds
+	Source: https://github.com/testing-library/dom-testing-library
+- @testing-library/react 16.3.2, licensed under MIT
+	Copyright (c) 2017-Present Kent C. Dodds
+	Source: https://github.com/testing-library/react-testing-library
+- ts-morph 27.0.2, licensed under MIT
+	Copyright (c) 2017 David Sherret
+	Source: https://github.com/dsherret/ts-morph
+- tsx 4.21.0, licensed under MIT
+	Copyright (c) Hiroki Osame <hiroki.osame@gmail.com>
+	Source: https://github.com/privatenumber/tsx
+- typescript 5.9.3, licensed under Apache-2.0
+	Copyright (c) Microsoft Corporation
+	Source: https://github.com/microsoft/TypeScript
+- typescript-eslint 8.55.0, licensed under MIT
+	Copyright (c) 2019 typescript-eslint and other contributors
+	Source: https://github.com/typescript-eslint/typescript-eslint
+- typescript-fsa 3.0.0, licensed under MIT
+	Copyright (c) 2016 Daniel Lytkin
+	Source: https://github.com/aikoven/typescript-fsa
+- @types/node 24.10.12, licensed under MIT
+	Copyright Node.js contributors and (c) Microsoft Corporation
+	Source: https://github.com/DefinitelyTyped/DefinitelyTyped
+- @types/picomatch 4.0.2, licensed under MIT
+	
+	Source: https://github.com/DefinitelyTyped/DefinitelyTyped/tree/master/types/picomatch
+- @types/react 19.2.13, licensed under MIT
+	Copyright (c) Microsoft Corporation
+	Source: https://github.com/DefinitelyTyped/DefinitelyTyped
+- @types/react-dom 19.2.3, licensed under MIT
+	Copyright (c) Microsoft Corporation
+	Source: https://github.com/DefinitelyTyped/DefinitelyTyped
+- @types/semver 7.7.1, licensed under MIT
+	Copyright (c) Microsoft Corporation
+	Source: https://github.com/DefinitelyTyped/DefinitelyTyped
+- @types/yargs 17.0.35, licensed under MIT
+	Copyright (c) Microsoft Corporation
+	Source: https://github.com/DefinitelyTyped/DefinitelyTyped
+- vitest 4.0.18, licensed under MIT
+	Copyright (c) 2021-Present VoidZero Inc. and Vitest contributors
+	Source: https://github.com/vitest-dev/vitest
+- @vitest/coverage-v8 4.0.18, licensed under MIT
+	Copyright (c) 2021-Present VoidZero Inc. and Vitest contributors
+	Source: https://github.com/vitest-dev/vitest
+- @welldone-software/why-did-you-render 10.0.1, licensed under MIT
+	Copyright (c) 2018-present, Vitali Zaidman <vzaidman@gmail.com>
+	Source: https://github.com/welldone-software/why-did-you-render
+- yargs 18.0.0, licensed under MIT
+	Copyright 2014 Contributors (ben@npmjs.com) and Copyright 2010 James Halliday (mail@substack.net)
+	Source: https://github.com/yargs/yargs
+
+
+- com.fasterxml.jackson.core/jackson-core 2.20.0, licensed under Apache-2.0
+	Copyright 2007-, Tatu Saloranta (tatu.saloranta@iki.fi)
+	Source: https://github.com/FasterXML/jackson-core
+- org.apache.groovy/groovy-all 4.0.28, licensed under Apache-2.0
+	Copyright 2003-2026 The Apache Software Foundation
+	Source: https://github.com/apache/groovy
+- org.jacoco/org.jacoco.agent 0.8.13, licensed under EPL-2.0
+	Copyright (c) 2009, 2025 Mountainminds GmbH & Co. KG and Contributors
+	Source: https://github.com/jacoco/jacoco
+- org.jacoco/org.jacoco.ant 0.8.13, licensed under EPL-2.0
+	Copyright (c) 2009, 2025 Mountainminds GmbH & Co. KG and Contributors
+	Source: https://github.com/jacoco/jacoco
+- org.spockframework/spock-core 2.4-groovy-4.0, licensed under Apache-2.0
+	Copyright 2012 the original author or authors
+	Source: https://github.com/spockframework/spock
+
+
+NOTICE file of Apache groovy
+---------------------------------
+
+Apache Groovy
+Copyright 2003-2026 The Apache Software Foundation
+
+This product includes software developed at
+The Apache Software Foundation (http://www.apache.org/).
+
+The Java source files in src/main/java/org/apache/groovy/util/concurrent/concurrentlinkedhashmap/
+are from https://github.com/ben-manes/concurrentlinkedhashmap and the following notice applies:
+Copyright 2010-2012 Google Inc. All Rights Reserved.
+
+The Java source file src/main/java/org/apache/groovy/util/concurrent/ConcurrentReferenceHashMap
+is from https://github.com/hazelcast/hazelcast and the following notice applies:
+Copyright (c) 2008-2020, Hazelcast, Inc. All Rights Reserved.
+
+This product bundles icons from the famfamfam.com silk icons set
+http://www.famfamfam.com/lab/icons/silk/
+Licensed under the Creative Commons Attribution Licence v2.5
+http://creativecommons.org/licenses/by/2.5/
+
+
+NOTICE file of Spock Framefork spock
+---------------------------------
+
+=========================================================================
+==  NOTICE file corresponding to the section 4 d of                    ==
+==  the Apache License, Version 2.0,                                   ==
+==  in this case for the Spock distribution.                           ==
+=========================================================================
+
+This product includes software developed by
+The Apache Software Foundation (https://www.apache.org/).
+
+For licenses see the LICENSE file.
+
+If any software distributed with Spock does not have an Apache 2 License, its license is explicitly listed in the
+LICENSE file.
+
+
+License Texts
+-------------
+
+Complete license texts for all included third-party components can
+be found in the licenses/ directory, attributions in file NOTICES.
+
+
+General Notice
+--------------
+
+The mgm A12 Platform is dual-licensed under the EUPL-1.2 or a
+commercial license. Third-party components remain under their
+respective licenses. For details, see the file LICENSE.
+
+“mgm A12” is a registered trademark of mgm technology partners GmbH
+(EU/DE). All other trademarks are the property of their respective
+owners.
+
+End of THIRD_PARTY_NOTICES

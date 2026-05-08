@@ -1,0 +1,57 @@
+{
+	"name": "@com.mgmtp.a12.devtools/codemod",
+	"version": "2.1.0",
+	"description": "Core framework for building self-documenting codemods",
+	"author": "mgm technology partners",
+	"license": "(EUPL-1.2 OR LicenseRef-commercial)",
+	"type": "module",
+	"exports": {
+		".": {
+			"types": "./lib/index.d.ts",
+			"import": "./lib/index.js"
+		}
+	},
+	"scripts": {
+		"clean": "git clean -fx .",
+		"compile": "tsc",
+		"watch": "tsc --watch",
+		"test": "pnpm \"/^test:/\"",
+		"test:unit": "vitest",
+		"test:api": "api-extractor run",
+		"update": "pnpm \"/^update:/\"",
+		"update:unit": "vitest -u",
+		"update:api": "api-extractor run --local"
+	},
+	"dependencies": {
+		"@inquirer/prompts": "catalog:",
+		"chalk": "catalog:",
+		"picomatch": "catalog:",
+		"semver": "catalog:",
+		"ts-morph": "catalog:",
+		"yargs": "catalog:"
+	},
+	"devDependencies": {
+		"@com.mgmtp.a12.devtools/tsconfig": "workspace:^",
+		"@microsoft/api-extractor": "catalog:",
+		"@types/node": "catalog:",
+		"@types/picomatch": "catalog:",
+		"@types/semver": "catalog:",
+		"@types/yargs": "catalog:",
+		"@vitest/coverage-v8": "catalog:",
+		"execa": "catalog:",
+		"strip-ansi": "catalog:",
+		"tsx": "catalog:",
+		"typescript": "catalog:",
+		"vitest": "catalog:"
+	},
+	"files": [
+		"lib",
+		"src",
+		"!**/__tests__/**",
+		"cyclonedx.json",
+		"LICENSE",
+		"NOTICE",
+		"THIRD_PARTY_NOTICES",
+		"licenses"
+	]
+}

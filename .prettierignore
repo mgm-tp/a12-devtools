@@ -1,0 +1,14 @@
+# Ignore compiled outputs and fixtures/resources across the workspace
+**/lib/**
+**/build/**
+*.api.md
+
+packages/build-tools/resources/detect-cycles
+packages/esm-codemod/**/fixture/
+packages/cyclonedx-node-npm/**
+
+licenses/
+
+# Exclude lockfiles and workspace metadata
+*.yaml
+!pnpm-workspace.yaml

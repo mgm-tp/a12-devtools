@@ -1,0 +1,35 @@
+{
+	"name": "@com.mgmtp.a12.devtools/root",
+	"description": "Devtools Workspaces Root",
+	"author": "mgm technology partners",
+	"license": "(EUPL-1.2 OR LicenseRef-commercial)",
+	"private": true,
+	"engines": {
+		"node": "^24",
+		"pnpm": "^11"
+	},
+	"type": "module",
+	"scripts": {
+		"clean": "pnpm -r --parallel clean",
+		"compile": "pnpm -r compile",
+		"start": "pnpm -r --parallel watch",
+		"test": "pnpm -r --parallel test",
+		"verify": "pnpm run \"/^(format|lint)$/\"",
+		"verify:fix": "pnpm run \"/^(format|lint):fix$/\"",
+		"format": "prettier . --check --cache --cache-strategy metadata",
+		"format:fix": "prettier . --write",
+		"lint": "node --run eslint -- --cache",
+		"lint:fix": "node --run eslint -- --fix",
+		"eslint": "eslint --flag unstable_native_nodejs_ts_config ."
+	},
+	"devDependencies": {
+		"@com.mgmtp.a12.devtools/eslint-config": "workspace:^",
+		"@com.mgmtp.a12.devtools/prettier-config": "workspace:^",
+		"@types/node": "catalog:",
+		"eslint": "catalog:",
+		"eslint-plugin-notice": "catalog:",
+		"prettier": "catalog:"
+	},
+	"packageManager": "pnpm@11.1.2",
+	"prettier": "@com.mgmtp.a12.devtools/prettier-config"
+}

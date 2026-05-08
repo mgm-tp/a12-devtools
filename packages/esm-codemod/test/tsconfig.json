@@ -1,0 +1,7 @@
+{
+	"extends": "@com.mgmtp.a12.devtools/tsconfig",
+	"file": ["cli.test.ts"],
+	"compilerOptions": {
+		"noEmit": true
+	}
+}

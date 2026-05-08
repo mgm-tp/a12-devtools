@@ -1,0 +1,14 @@
+{
+	"[typescript][typescriptreact][jsonc]": {
+		"editor.formatOnSave": true,
+		"editor.defaultFormatter": "esbenp.prettier-vscode",
+		"editor.codeActionsOnSave": [
+			"source.organizeImports",
+			"source.fixAll.eslint"
+		]
+	},
+	"cSpell.words": ["codemod", "esbuild", "loglevel", "mgmtp", "welldone"],
+	"eslint.options": {
+		"flags": ["unstable_native_nodejs_ts_config"]
+	}
+}

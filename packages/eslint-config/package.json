@@ -1,0 +1,41 @@
+{
+	"name": "@com.mgmtp.a12.devtools/eslint-config",
+	"version": "3.1.0",
+	"type": "module",
+	"description": "Shared ESLint config for A12 projects",
+	"exports": "./lib/index.js",
+	"files": [
+		"lib",
+		"cyclonedx.json",
+		"LICENSE",
+		"NOTICE",
+		"THIRD_PARTY_NOTICES",
+		"licenses"
+	],
+	"scripts": {
+		"clean": "git clean -fx .",
+		"compile": "tsc"
+	},
+	"keywords": [
+		"eslint",
+		"eslintconfig"
+	],
+	"author": "mgm technology partners",
+	"license": "(EUPL-1.2 OR LicenseRef-commercial)",
+	"peerDependencies": {
+		"eslint": "catalog:peers"
+	},
+	"dependencies": {
+		"@eslint/js": "catalog:",
+		"eslint-plugin-import": "catalog:",
+		"eslint-plugin-react": "catalog:",
+		"eslint-plugin-react-hooks": "catalog:",
+		"globals": "catalog:",
+		"typescript-eslint": "catalog:"
+	},
+	"devDependencies": {
+		"@com.mgmtp.a12.devtools/tsconfig": "workspace:^",
+		"eslint": "catalog:",
+		"typescript": "catalog:"
+	}
+}

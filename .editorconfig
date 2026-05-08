@@ -1,0 +1,15 @@
+root = true
+
+[*.md]
+trim_trailing_whitespace = false
+
+[*.json]
+indent_style = space
+indent_size = 2
+
+[jenkinsfile]
+indent_style = space
+indent_size = 4
+
+[license_header.txt]
+insert_final_newline = false

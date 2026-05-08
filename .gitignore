@@ -1,0 +1,39 @@
+# our settings
+target/
+overlays/
+
+# Gradle
+**/build/
+gradle/
+gradlew
+gradlew.bat
+
+# Helm
+/helm/charts/
+
+# Node
+node_modules/
+.npm/
+*.log
+npm-debug.log*
+
+# IDE
+.idea/
+.classpath/
+.project
+.settings/
+.metadata/
+.gradle/
+*.iml
+*.launch
+
+# Other
+.DS_Store/
+.envrc
+
+# Build artifact
+*.tgz
+**/lib/
+**/temp
+.eslintcache
+cyclonedx.json

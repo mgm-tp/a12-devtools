@@ -1,0 +1,42 @@
+{
+	"name": "@com.mgmtp.a12.devtools/react",
+	"version": "0.2.0",
+	"description": "Shared React devtools",
+	"author": "mgm technology partners",
+	"license": "(EUPL-1.2 OR LicenseRef-commercial)",
+	"type": "module",
+	"sideEffects": false,
+	"scripts": {
+		"clean": "git clean -fx .",
+		"compile": "tsc"
+	},
+	"files": [
+		"lib",
+		"src",
+		"cyclonedx.json",
+		"LICENSE",
+		"NOTICE",
+		"THIRD_PARTY_NOTICES",
+		"licenses"
+	],
+	"exports": "./lib/index.js",
+	"dependencies": {
+		"fast-deep-equal": "catalog:"
+	},
+	"devDependencies": {
+		"@com.mgmtp.a12.devtools/tsconfig": "workspace:^",
+		"@testing-library/dom": "catalog:",
+		"@testing-library/react": "catalog:",
+		"@types/node": "catalog:",
+		"@types/react": "catalog:",
+		"@types/react-dom": "catalog:",
+		"eslint": "catalog:",
+		"react": "catalog:",
+		"typescript": "catalog:"
+	},
+	"peerDependencies": {
+		"@testing-library/dom": "catalog:peers",
+		"@testing-library/react": "catalog:peers",
+		"react": "catalog:peers"
+	}
+}

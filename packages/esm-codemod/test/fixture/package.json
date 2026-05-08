@@ -1,0 +1,8 @@
+{
+  "dependencies": {
+    "@com.mgmtp.a12.utils/utils-collections": "5.8.1",
+    "styled-components": "6.1.15",
+    "typescript-fsa": "3.0.0",
+    "react": "19.1.0"
+  }
+}

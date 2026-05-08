@@ -1,0 +1,25 @@
+{
+	"name": "@com.mgmtp.a12.devtools/prettier-config",
+	"version": "1.1.0",
+	"type": "module",
+	"description": "Shared Prettier config for A12 projects",
+	"exports": "./lib/index.js",
+	"files": [
+		"lib",
+		"cyclonedx.json",
+		"LICENSE",
+		"NOTICE",
+		"THIRD_PARTY_NOTICES",
+		"licenses"
+	],
+	"scripts": {
+		"clean": "git clean -fx .",
+		"compile": "tsc"
+	},
+	"author": "mgm technology partners",
+	"license": "(EUPL-1.2 OR LicenseRef-commercial)",
+	"devDependencies": {
+		"@com.mgmtp.a12.devtools/tsconfig": "workspace:^",
+		"typescript": "catalog:"
+	}
+}

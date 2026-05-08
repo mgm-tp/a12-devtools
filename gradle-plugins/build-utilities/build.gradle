@@ -1,0 +1,23 @@
+plugins {
+    id "base"
+    id "groovy"
+    id "java-gradle-plugin"
+    id "maven-publish"
+}
+
+apply from: "${rootDir}/gradle-plugins/plugin-common.gradle"
+
+gradlePlugin {
+    plugins {
+        buildUtilities {
+            id = "com.mgmtp.a12.devtools.plugins.build-utilities"
+            displayName = 'Build Utilities Plugin for A12 projects'
+            description = 'Build utilities for A12 projects including tasks and helper utilities'
+            tags.set(['build', 'gradle', 'plugin', 'a12', 'utilities'])
+            implementationClass = "com.mgmtp.a12.devtools.gradle.plugins.buildutils.BuildUtilsPlugin"
+        }
+    }
+}
+
+
+
