@@ -4,6 +4,6 @@
 	"compilerOptions": {
 		"outDir": "./lib",
 		"rootDir": "./src",
-		"esModuleInterop": true
+		"types": ["node"]
 	}
 }

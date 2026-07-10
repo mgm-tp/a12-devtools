@@ -1,0 +1,63 @@
+plugins {
+    id 'java-library'
+    id 'groovy'
+    id 'maven-publish'
+}
+
+apply from: "${rootDir}/gradle-plugins/plugin-common.gradle"
+
+ext {
+    wcfVersion = '1.0.0'
+    // Must match the Spring Boot version wcf-core ${wcfVersion} brings transitively. Verify with:
+    //   gradle :gradle-plugins:prepare-models-validation-converter:dependencies --configuration runtimeClasspath
+    springBootVersion = '4.0.6'
+    kernelMdFacadeVersion = '31.1.0'
+    rmcConversionVersion = '0.4.1'
+}
+
+configurations.all {
+    resolutionStrategy.capabilitiesResolution.withCapability('org.codehaus.groovy:groovy') {
+        // kernel-md-facade transitively pulls in org.codehaus.groovy (Groovy 3.x legacy packaging).
+        // Groovy 4.x re-publishes under org.apache.groovy but declares the same capability.
+        // Prefer the org.apache.groovy variant so it is compatible with spock-core 2.4-groovy-4.0.
+        def orgApache = candidates.find { it.id.module == 'groovy' && it.id.group == 'org.apache.groovy' }
+        if (orgApache) {
+            select(orgApache)
+        } else {
+            selectLargest()
+        }
+    }
+}
+
+dependencies {
+    implementation "com.mgmtp.a12.dataservices.wcf:dataservices-wcf-core:${wcfVersion}"
+
+    // Spring Boot, so WcfConversionLauncher can call SpringApplication.run(...). wcf-core pulls spring-boot
+    // transitively but only as `implementation`, so it is not on our compile classpath unless declared here.
+    implementation "org.springframework.boot:spring-boot-starter:${springBootVersion}"
+
+    compileOnly "com.mgmtp.a12.kernel:kernel-md-facade:${kernelMdFacadeVersion}"
+    implementation "com.mgmtp.a12.rmc:conversion:${rmcConversionVersion}"
+
+    // SLF4J API for debug logging in ValidationCodeConverter; present at runtime transitively via Spring Boot.
+    compileOnly 'org.slf4j:slf4j-api:2.0.16'
+
+    testImplementation libs.spock.core
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+}
+
+test {
+    useJUnitPlatform()
+    testLogging {
+        events 'passed', 'skipped', 'failed'
+        exceptionFormat = 'full'
+    }
+}
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            from components.java
+        }
+    }
+}

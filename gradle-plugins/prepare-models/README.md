@@ -12,8 +12,8 @@ The Prepare Models Plugin transforms A12 model workspaces into flat, runtime-rea
 - 📄 **Document model expansion** - Replaces document models with expanded variants
 - ✅ **Validation code generation** - Creates validation code for expanded models
 - 🔄 **Model migration** - Migrates document models to latest version
-- ⚡ **Incremental builds** - Only processes changed files
-- 🔗 **Dependency tracking** - Automatically reprocesses dependent models
+- ⚡ **Incremental builds** - Gradle task-level up-to-date checking skips the WCF conversion run when inputs are unchanged
+- 🔗 **Model references** - WCF resolves document-model includes/references internally during full workspace conversion
 
 ## Installation
 
@@ -27,20 +27,14 @@ plugins {
 
 ## Prerequisites
 
-This plugin requires the following A12 kernel libraries to be available as buildscript dependencies:
+The main `prepareModels` flow needs no extra buildscript dependencies — `convertWorkspaceModels` resolves the `prepare-models-validation-converter` library and its transitive dependencies at build time and runs the WCF conversion pipeline in a forked JVM.
 
-- "com.mgmtp.a12.kernel:kernel-md-model"
-- "com.mgmtp.a12.kernel:kernel-md-facade"
-- "com.mgmtp.a12.kernel:kernel-tool-model-migration"
-
-The kernel version should be the one supporting the document models in the workspace.
+The `migrateDocumentModels` helper task is the exception: it runs the kernel migration CLI from the buildscript classpath, so projects that use it must provide the A12 kernel library `kernel-md-facade` as a buildscript dependency (matching the kernel version that supports the document models in the workspace):
 
 ```groovy
 buildscript {
     dependencies {
-        classpath 'com.mgmtp.a12.kernel:kernel-md-model:<version>'
         classpath 'com.mgmtp.a12.kernel:kernel-md-facade:<version>'
-        classpath 'com.mgmtp.a12.kernel:kernel-tool-model-migration:<version>'
     }
 }
 ```
@@ -49,15 +43,14 @@ buildscript {
 
 When applying the plugin, the following tasks are registered in your project:
 
-- generateValidationCode - creates the validation code for the Document Models
+- convertWorkspaceModels - converts the workspace via the WCF library (expands document models; generates validation code when `generateValidationCode` is enabled)
 - copyOtherFiles - copies all files that are not Document Models from the workspace to the output directory in a flat structure
-- expandDocumentModels - creates the expanded Document Models in the output directory
-- mergeOutputs - merges the separate task outputs into the final output directory
+- mergeOutputs - merges the WCF conversion output (expanded models + validation code) into the final output directory
 - prepareModels - does all of the above. This is the recommended task to use in your build script.
 
-The `mergeOutputs` task is a simple copy task that consolidates the outputs from the separate processing tasks into the final output directory. This design enables:
+The `mergeOutputs` task consolidates the WCF conversion output (`build/expanded-code`) and the other-files output into the final output directory. This design enables:
 
-- **Incremental builds**: Each processing task writes to its own dedicated output directory
+- **Incremental builds**: Each task writes to its own dedicated output directory, so Gradle's up-to-date checking applies per task
 - **Proper output tracking**: Gradle can track which task produced which files
 - **Correct up-to-date checking**: Changes in one processing step don't invalidate outputs from other steps
 - **Build cache compatibility**: Separate outputs can be cached independently
@@ -72,8 +65,10 @@ The following properties can be configured via the 'prepareModels' extension:
 
 - inputPath - string of the input directory path - defaults to "\<projectDirectory.path\>"
 - outputPath - string of the output directory path - defaults to "\<projectDirectory.path\>/../../target/models"
-- enableLog - boolean flag to enable detailed logging output - defaults to `false`
 - eachFileAction - custom action to transform file paths when copying other files with `copyOtherFiles` - defaults to flattening files (copying only the file name, not the directory structure)
+- generateValidationCode - boolean flag to generate validation code inside the WCF conversion pipeline - defaults to `false` (see [In-converter validation code generation](#in-converter-validation-code-generation) below)
+- kernelMdFacadeVersion - version of `kernel-md-facade` used for validation code generation in the forked JVM — auto-detected from the buildscript classpath when present; if neither this property is set nor kernel is on the buildscript classpath, the forked JVM relies on the transitive kernel version from wcf-core (which may not match your runtime); must match the kernel version used at runtime
+- validationConverterVersion - version of the `prepare-models-validation-converter` library resolved onto the forked JVM classpath - defaults to the version this plugin was built against
 
 #### Example Configuration
 
@@ -88,42 +83,57 @@ prepareModels {
 }
 ```
 
+#### In-converter validation code generation
+
+`convertWorkspaceModels` runs the WCF conversion pipeline in a forked JVM. The plugin resolves the
+`prepare-models-validation-converter` library and its transitive dependencies (WCF core, the RMC
+converter pipeline, kernel validation codegen, Spring Boot) onto a single classpath and launches
+`WcfConversionLauncher`, which boots a Spring context, discovers every `@WcfConverter` (RMC's pipeline
+plus the validation-code converter) by component scan, and runs them in order. When
+`generateValidationCode` is `true`, the launcher is started with
+`-Dvalidation.codegen.enabled=true` so the validation-code converter emits `*.validation.js` files.
+
+With the flag off (default), `prepareModels` produces no validation code.
+
+```groovy
+prepareModels {
+    generateValidationCode = true
+    // optional: pin the validation-converter library version
+    // validationConverterVersion = '0.2.0'
+}
+```
+
+When `kernelMdFacadeVersion` is not set, the plugin auto-detects the kernel version from the
+project's buildscript classpath. Projects that already declare `kernel-md-facade` as a buildscript
+dependency (required for `migrateDocumentModels`) get the correct version automatically. To
+override explicitly:
+
+```groovy
+prepareModels {
+    generateValidationCode = true
+    kernelMdFacadeVersion = '32.0.0'  // must match runtime kernel version
+}
+```
+
+> If neither `kernelMdFacadeVersion` nor a buildscript `kernel-md-facade` dependency is present,
+> the forked JVM still receives kernel transitively from `wcf-core` — but the version will be
+> whatever `wcf-core` carries, which may not match your runtime kernel. For correct generated code
+> compatibility, always ensure kernel is discoverable via one of the two paths above.
+
+Notes:
+
+- Default is `false`. When disabled, the validation-code converter is still on the classpath but
+  does not emit any files.
+- The WCF and RMC versions are **fixed transitively by the `prepare-models-validation-converter`
+  library**; there is no separate `wcfCliVersion` or `rmcConverterVersion` knob. The kernel version, however, is configurable via `kernelMdFacadeVersion` and auto-detected from the buildscript classpath when not set.
+
 ## Architecture
 
-### ModelConversionTask (Base Class)
+### ConvertWorkspaceModelsTask
 
-The abstract base class for document model processing tasks. It provides:
-
-- **Incremental build support**: Only processes changed files using Gradle's `InputChanges` API
-- **Dependency tracking**: Automatically reprocesses dependent files when an included model changes
-- **JavaExec wrapper**: Delegates to A12 kernel CLI tools for the actual model processing
-
-**Key responsibilities:**
-
-- Monitors the input directory for changes (added/modified/removed document models)
-- Reads the dependency cache to find dependent models
-- Builds command-line arguments for the kernel tools
-- Only executes when there are actual changes to process
-
-### UpdateDependenciesTask
-
-A helper task that builds and maintains a dependency graph of document models.
-
-**Purpose:**
-Document models can include other models using `modelReferences`. When a base model changes, all models that include it must be reprocessed. This task:
-
-- Scans document models for `include` references
-- Builds a reverse dependency map (which models depend on which)
-- Stores this information in a cache file (`target/includes`)
-
-**Example:**
-If `model-a.json` includes `model-b.json`, the cache records that `model-b.json` is a dependency of `model-a.json`. When `model-b.json` changes, `model-a.json` must also be expanded/regenerated.
-
-### Why the Extension Pattern?
-
-Both expansion and validation code generation follow the same pattern:
-
-- Watch for file changes incrementally
-- Track dependencies between models
-- Execute a kernel CLI tool
-- Only process what changed
+`ConvertWorkspaceModelsTask` is the sole model-processing engine. It resolves the
+`prepare-models-validation-converter` library and its transitive dependencies onto a forked JVM
+classpath and launches `WcfConversionLauncher`. The launcher boots a Spring context, discovers every
+`@WcfConverter` (RMC's pipeline plus the validation-code converter) by component scan, and runs them
+in order. When `generateValidationCode` is enabled, it passes
+`-Dvalidation.codegen.enabled=true` so the validation-code converter emits `*.validation.js` files.

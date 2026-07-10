@@ -1,6 +1,6 @@
 {
 	"name": "@com.mgmtp.a12.devtools/tsconfig",
-	"version": "1.1.0",
+	"version": "2.0.1",
 	"description": "Shared TypeScript config for A12 projects",
 	"author": "mgm technology partners",
 	"license": "(EUPL-1.2 OR LicenseRef-commercial)",

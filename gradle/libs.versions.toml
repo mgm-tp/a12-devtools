@@ -1,0 +1,18 @@
+# Run `gradle versionCatalogUpdate --interactive` to update this file
+[versions]
+# Gradle plugins (third-party)
+cyclonedx = "3.2.4"
+spotless = "8.7.0"
+version-catalog-update = "1.1.0"
+# Third-party libraries
+spock-core = "2.4-groovy-4.0"
+groovy-all = "4.0.29"
+
+[libraries]
+spock-core = { module = "org.spockframework:spock-core", version.ref = "spock-core" }
+groovy-all = { module = "org.apache.groovy:groovy-all", version.ref = "groovy-all" }
+
+[plugins]
+cyclonedx = { id = "org.cyclonedx.bom", version.ref = "cyclonedx" }
+spotless = { id = "com.diffplug.spotless", version.ref = "spotless" }
+version-catalog-update = { id = "nl.littlerobots.version-catalog-update", version.ref = "version-catalog-update" }

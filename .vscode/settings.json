@@ -1,5 +1,8 @@
 {
-	"[typescript][typescriptreact][jsonc]": {
+	"js/ts.validate.enabled": true,
+	"js/ts.preferences.importModuleSpecifierEnding": "js",
+	"js/ts.tsdk.path": "./packages/build-tools/node_modules/typescript/lib",
+	"[javascript][typescript][typescriptreact][jsonc]": {
 		"editor.formatOnSave": true,
 		"editor.defaultFormatter": "esbenp.prettier-vscode",
 		"editor.codeActionsOnSave": [
@@ -7,7 +10,17 @@
 			"source.fixAll.eslint"
 		]
 	},
-	"cSpell.words": ["codemod", "esbuild", "loglevel", "mgmtp", "welldone"],
+	"cSpell.words": [
+		"codegen",
+		"codehaus",
+		"codemod",
+		"esbuild",
+		"fatjar",
+		"logback",
+		"loglevel",
+		"mgmtp",
+		"welldone"
+	],
 	"eslint.options": {
 		"flags": ["unstable_native_nodejs_ts_config"]
 	}

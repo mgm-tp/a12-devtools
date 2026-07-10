@@ -1,7 +1,7 @@
 THIRD_PARTY_NOTICES
 
 Component: A12 devtools
-Generated: 2026-03-09 for mgm A12 Platform 2025.06-ext5
+Generated: 2026-04-30 for mgm A12 Platform 2026.06
 
 The mgm A12 Platform is developed by mgm technology partners GmbH.
 
@@ -17,7 +17,6 @@ Component Overview
 The following third-party components are included in this distribution:
 
 
-
 - chalk 5.6.2, licensed under MIT
 	Copyright (c) Sindre Sorhus <sindresorhus@gmail.com> (https://sindresorhus.com)
 	Source: https://github.com/chalk/chalk
@@ -27,16 +26,13 @@ The following third-party components are included in this distribution:
 - @com.mgmtp.a12.utils/utils-collections 5.8.1, licensed under EUPL v1.2
 	Copyright (C) 2012-2026 mgm technology partners GmbH
 	Source: https://github.com/mgm-tp
-- eslint 9.39.2, licensed under MIT
-	Copyright OpenJS Foundation and other contributors, <www.openjsf.org>
-	Source: https://github.com/eslint/eslint
-- @eslint/js 9.39.2, licensed under MIT
+- eslint 9.39.4, licensed under MIT
 	Copyright OpenJS Foundation and other contributors, <www.openjsf.org>
 	Source: https://github.com/eslint/eslint
 - eslint-plugin-import 2.32.0, licensed under MIT
 	Copyright (c) 2015 Ben Mosher
 	Source: https://github.com/import-js/eslint-plugin-import
-- eslint-plugin-notice 1.0.0, licensed under MIT
+- eslint-plugin-notice 1.1.0-rc1, licensed under MIT
 	Copyright (c) 2017 Nick Deis
 	Source: https://github.com/nickdeis/eslint-plugin-notice
 - eslint-plugin-react 7.37.5, licensed under MIT
@@ -54,22 +50,18 @@ The following third-party components are included in this distribution:
 - find-up 8.0.0, licensed under MIT
 	Copyright (c) Sindre Sorhus <sindresorhus@gmail.com> (https://sindresorhus.com)
 	Source: https://github.com/sindresorhus/find-up
-- glob 13.0.1, licensed under BlueOak-1.0.0
-	
+- glob 13.0.6, licensed under BlueOak-1.0.0
 	Source: https://github.com/isaacs/node-glob
-- globals 17.3.0, licensed under MIT
-	Copyright (c) Sindre Sorhus <sindresorhus@gmail.com> (https://sindresorhus.com)
-	Source: https://github.com/sindresorhus/globals
-- @inquirer/prompts 8.2.0, licensed under MIT
+- @inquirer/prompts 8.3.2, licensed under MIT
 	Copyright (c) 2025 Simon Boudrias
 	Source: https://github.com/SBoudrias/Inquirer.js
-- @microsoft/api-extractor 7.56.3, licensed under MIT
-	Copyright (c) Microsoft Corporation. All rights reserved
-	Source: https://github.com/microsoft/rushstack/tree/main/apps/api-extractor
+- @microsoft/api-extractor 7.57.7, licensed under MIT
+	Copyright (c) Microsoft Corporation. All rights reserved.
+	Source: https://github.com/microsoft/rushstack
 - package-up 5.0.0, licensed under MIT
 	Copyright (c) Sindre Sorhus <sindresorhus@gmail.com> (https://sindresorhus.com)
 	Source: https://github.com/sindresorhus/package-up
-- picomatch 4.0.3, licensed under MIT
+- picomatch 4.0.4, licensed under MIT
 	Copyright (c) 2017-present, Jon Schlinkert
 	Source: https://github.com/micromatch/picomatch
 - prettier 3.8.1, licensed under MIT
@@ -84,7 +76,7 @@ The following third-party components are included in this distribution:
 - semver 7.7.4, licensed under ISC
 	Copyright (c) Isaac Z. Schlueter and Contributors
 	Source: https://github.com/npm/node-semver
-- strip-ansi 7.1.2, licensed under MIT
+- strip-ansi 7.2.0, licensed under MIT
 	Copyright (c) Sindre Sorhus <sindresorhus@gmail.com> (https://sindresorhus.com)
 	Source: https://github.com/chalk/strip-ansi
 - styled-components 6.1.15, licensed under MIT
@@ -102,37 +94,37 @@ The following third-party components are included in this distribution:
 - tsx 4.21.0, licensed under MIT
 	Copyright (c) Hiroki Osame <hiroki.osame@gmail.com>
 	Source: https://github.com/privatenumber/tsx
-- typescript 5.9.3, licensed under Apache-2.0
+- typescript 6.0.2, licensed under Apache-2.0
 	Copyright (c) Microsoft Corporation
 	Source: https://github.com/microsoft/TypeScript
-- typescript-eslint 8.55.0, licensed under MIT
+- typescript-eslint 8.58.0, licensed under MIT
 	Copyright (c) 2019 typescript-eslint and other contributors
 	Source: https://github.com/typescript-eslint/typescript-eslint
 - typescript-fsa 3.0.0, licensed under MIT
 	Copyright (c) 2016 Daniel Lytkin
 	Source: https://github.com/aikoven/typescript-fsa
-- @types/node 24.10.12, licensed under MIT
-	Copyright Node.js contributors and (c) Microsoft Corporation
+- @types/node 24.12.0, licensed under MIT
+	Copyright Node.js contributors
 	Source: https://github.com/DefinitelyTyped/DefinitelyTyped
 - @types/picomatch 4.0.2, licensed under MIT
-	
+	Copyrights are respective of each contributor listed at the beginning of each definition file
 	Source: https://github.com/DefinitelyTyped/DefinitelyTyped/tree/master/types/picomatch
-- @types/react 19.2.13, licensed under MIT
-	Copyright (c) Microsoft Corporation
+- @types/react 19.2.14, licensed under MIT
+	Copyrights are respective of each contributor listed at the beginning of each definition file
 	Source: https://github.com/DefinitelyTyped/DefinitelyTyped
 - @types/react-dom 19.2.3, licensed under MIT
-	Copyright (c) Microsoft Corporation
+	Copyrights are respective of each contributor listed at the beginning of each definition file
 	Source: https://github.com/DefinitelyTyped/DefinitelyTyped
 - @types/semver 7.7.1, licensed under MIT
-	Copyright (c) Microsoft Corporation
+	Copyrights are respective of each contributor listed at the beginning of each definition file
 	Source: https://github.com/DefinitelyTyped/DefinitelyTyped
 - @types/yargs 17.0.35, licensed under MIT
-	Copyright (c) Microsoft Corporation
+	Copyrights are respective of each contributor listed at the beginning of each definition file
 	Source: https://github.com/DefinitelyTyped/DefinitelyTyped
-- vitest 4.0.18, licensed under MIT
+- vitest 4.1.0, licensed under MIT
 	Copyright (c) 2021-Present VoidZero Inc. and Vitest contributors
 	Source: https://github.com/vitest-dev/vitest
-- @vitest/coverage-v8 4.0.18, licensed under MIT
+- @vitest/coverage-v8 4.1.0, licensed under MIT
 	Copyright (c) 2021-Present VoidZero Inc. and Vitest contributors
 	Source: https://github.com/vitest-dev/vitest
 - @welldone-software/why-did-you-render 10.0.1, licensed under MIT
@@ -141,7 +133,6 @@ The following third-party components are included in this distribution:
 - yargs 18.0.0, licensed under MIT
 	Copyright 2014 Contributors (ben@npmjs.com) and Copyright 2010 James Halliday (mail@substack.net)
 	Source: https://github.com/yargs/yargs
-
 
 - com.fasterxml.jackson.core/jackson-core 2.20.0, licensed under Apache-2.0
 	Copyright 2007-, Tatu Saloranta (tatu.saloranta@iki.fi)
@@ -160,11 +151,11 @@ The following third-party components are included in this distribution:
 	Source: https://github.com/spockframework/spock
 
 
-NOTICE file of Apache groovy
----------------------------------
+NOTICE file of org.apache.groovy
+---------------------------
 
 Apache Groovy
-Copyright 2003-2026 The Apache Software Foundation
+Copyright 2003-2025 The Apache Software Foundation
 
 This product includes software developed at
 The Apache Software Foundation (http://www.apache.org/).
@@ -182,9 +173,8 @@ http://www.famfamfam.com/lab/icons/silk/
 Licensed under the Creative Commons Attribution Licence v2.5
 http://creativecommons.org/licenses/by/2.5/
 
-
-NOTICE file of Spock Framefork spock
----------------------------------
+NOTICE file of org.spockframework
+---------------------------
 
 =========================================================================
 ==  NOTICE file corresponding to the section 4 d of                    ==
@@ -214,8 +204,7 @@ General Notice
 The mgm A12 Platform is dual-licensed under the EUPL-1.2 or a
 commercial license. Third-party components remain under their
 respective licenses. For details, see the file LICENSE.
-
-“mgm A12” is a registered trademark of mgm technology partners GmbH
+"mgm A12" is a registered trademark of mgm technology partners GmbH
 (EU/DE). All other trademarks are the property of their respective
 owners.
 

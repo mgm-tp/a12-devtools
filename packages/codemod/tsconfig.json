@@ -1,11 +1,32 @@
 {
-	"extends": "@com.mgmtp.a12.devtools/tsconfig",
 	"compilerOptions": {
-		"outDir": "./lib",
-		"rootDir": "./src",
 		"declaration": true,
 		"declarationMap": true,
-		"allowJs": true
+		"esModuleInterop": true,
+		"forceConsistentCasingInFileNames": true,
+		"isolatedModules": true,
+		"jsx": "react-jsx",
+		"lib": ["DOM", "ES2024"], // TODO: remove when api-extractor supports TS6
+		"module": "NodeNext",
+		"moduleDetection": "force",
+		"moduleResolution": "NodeNext",
+		"newLine": "LF",
+		"noEmitOnError": true,
+		"noErrorTruncation": true,
+		"noFallthroughCasesInSwitch": true,
+		"noImplicitReturns": true,
+		"noUnusedLocals": true,
+		"noUnusedParameters": false,
+		"preserveConstEnums": true,
+		"resolveJsonModule": true,
+		"sourceMap": true,
+		"stripInternal": true,
+		"target": "ES2024",
+		"verbatimModuleSyntax": true,
+		"allowJs": true,
+		"outDir": "./lib",
+		"rootDir": "./src",
+		"types": ["node"]
 	},
 	"include": ["src"]
 }

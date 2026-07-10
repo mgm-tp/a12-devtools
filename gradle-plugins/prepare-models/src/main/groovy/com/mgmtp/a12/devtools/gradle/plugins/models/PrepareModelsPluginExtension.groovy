@@ -8,7 +8,7 @@
  * This source file is part of the mgm A12 Platform and available under
  * a choice of two different licenses:
  *
- * 1. Open-Source License – EUPL v1.2
+ * 1. Open-Source License - EUPL v1.2
  *    You may redistribute and/or modify this file under the terms of the
  *    European Union Public License, version 1.2 - see https://eupl.eu/.
  *
@@ -23,7 +23,7 @@
  *
  * Warranty Disclaimer (applies to either option)
  * ----------------------------------------------
- * THIS SOFTWARE IS PROVIDED “AS IS” AND WITHOUT WARRANTY OF ANY KIND,
+ * THIS SOFTWARE IS PROVIDED "AS IS" AND WITHOUT WARRANTY OF ANY KIND,
  * WHETHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
  * OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
  * NON-INFRINGEMENT, EXCEPT WHERE SUCH DISCLAIMERS ARE HELD TO BE
@@ -42,7 +42,37 @@ abstract class PrepareModelsPluginExtension {
 
     abstract DirectoryProperty getOutputDir()
 
-    abstract Property<Boolean> getEnableLog()
-
     abstract Property<Action<FileCopyDetails>> getEachFileAction()
+
+    /**
+     * When {@code true}, the {@code convertWorkspaceModels} task enables the
+     * {@code ValidationCodeConverter} (order 55) inside the forked WCF conversion JVM
+     * so that validation JS is generated alongside the expanded models.
+     * Default {@code false}: the WCF converter runs without codegen.
+     */
+    abstract Property<Boolean> getGenerateValidationCode()
+
+    /**
+     * Version of the prepare-models-validation-converter library
+     * {@code com.mgmtp.a12.devtools.plugins:prepare-models-validation-converter:<version>} resolved onto
+     * the forked conversion JVM classpath. The library carries WcfConversionLauncher + ValidationCodeConverter
+     * and pulls the WCF core, the RMC converter pipeline, and kernel codegen transitively, so those versions
+     * are fixed by this library rather than overridable per consumer.
+     */
+    abstract Property<String> getValidationConverterVersion()
+
+    /**
+     * Version of {@code kernel-md-facade} placed on the forked WCF conversion JVM classpath
+     * for validation code generation. Must match the kernel version used at runtime so that
+     * generated validation JS is compatible.
+     *
+     * <p>When unset (default), the plugin auto-detects the version from the project's buildscript
+     * classpath. If kernel is not found there, no explicit kernel dependency is added; the forked
+     * JVM receives kernel transitively from {@code wcf-core}, but the version may not match your
+     * runtime kernel.
+     *
+     * <p>Override explicitly when the buildscript classpath does not contain kernel or when a
+     * specific version is required.
+     */
+    abstract Property<String> getKernelMdFacadeVersion()
 }

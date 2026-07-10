@@ -1,6 +1,6 @@
 {
 	"name": "@com.mgmtp.a12.devtools/react",
-	"version": "0.2.0",
+	"version": "0.2.1",
 	"description": "Shared React devtools",
 	"author": "mgm technology partners",
 	"license": "(EUPL-1.2 OR LicenseRef-commercial)",

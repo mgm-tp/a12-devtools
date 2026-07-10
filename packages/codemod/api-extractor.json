@@ -1,5 +1,5 @@
 {
-	"$schema": "./node_modules/@microsoft/api-extractor/lib/schemas/api-extractor.schema.json",
+	"$schema": "./node_modules/@microsoft/api-extractor/lib-esm/schemas/api-extractor.schema.json",
 	"projectFolder": ".",
 	"mainEntryPointFilePath": "lib/index.d.ts",
 	"bundledPackages": [],

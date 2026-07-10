@@ -4,20 +4,9 @@ enableFeaturePreview "STABLE_CONFIGURATION_CACHE"
 
 dependencyResolutionManagement {
     versionCatalogs {
-        libs {
-            version('spock-core', '2.4-groovy-4.0')
-            version('jackson-core', '2.20.0')
-            version('groovy-all', '4.0.28')
-
-            library('spock-core', 'org.spockframework', 'spock-core').versionRef('spock-core')
-            library('jackson-core', 'com.fasterxml.jackson.core', 'jackson-core').versionRef('jackson-core')
-            library('groovy-all', 'org.apache.groovy', 'groovy-all').versionRef('groovy-all')
-        }
-
-        if (file("internal").exists()) {
-            a12Plugins {
-                version('artifact-publish', '0.4.0-rc.1')
-                library('artifact-publish', 'com.mgmtp.a12.bd.artifact-publish', 'com.mgmtp.a12.bd.artifact-publish.gradle.plugin').versionRef('artifact-publish')
+        if (file('gradle/a12-internal.versions.toml').exists()) {
+            create('a12Internal') {
+                from(files('gradle/a12-internal.versions.toml'))
             }
         }
     }
@@ -25,6 +14,7 @@ dependencyResolutionManagement {
 
 include 'gradle-plugins:build-utilities'
 include 'gradle-plugins:prepare-models'
+include 'gradle-plugins:prepare-models-validation-converter'
 
 if (file("internal").exists()) {
     include 'internal'

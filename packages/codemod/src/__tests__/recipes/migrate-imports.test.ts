@@ -8,7 +8,7 @@
  * This source file is part of the mgm A12 Platform and available under
  * a choice of two different licenses:
  *
- * 1. Open-Source License – EUPL v1.2
+ * 1. Open-Source License - EUPL v1.2
  *    You may redistribute and/or modify this file under the terms of the
  *    European Union Public License, version 1.2 - see https://eupl.eu/.
  *
@@ -23,22 +23,22 @@
  *
  * Warranty Disclaimer (applies to either option)
  * ----------------------------------------------
- * THIS SOFTWARE IS PROVIDED “AS IS” AND WITHOUT WARRANTY OF ANY KIND,
+ * THIS SOFTWARE IS PROVIDED "AS IS" AND WITHOUT WARRANTY OF ANY KIND,
  * WHETHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
  * OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
  * NON-INFRINGEMENT, EXCEPT WHERE SUCH DISCLAIMERS ARE HELD TO BE
  * LEGALLY INVALID. SEE THE RESPECTIVE LICENSE TEXT FOR DETAILS.
  */
 
-import { Project } from "ts-morph";
-import { it, expect, describe, beforeEach } from "vitest";
+import { ModuleKind, Project, ScriptTarget } from "ts-morph";
+import { beforeEach, describe, expect, it } from "vitest";
 
 import {
 	migrateImports,
 	type ImportMigrationConfiguration,
-	type TargetEntityMigrationConfiguration,
+	type NormalizedEntityMigrationConfiguration,
 	type SourceEntityMigrationConfiguration,
-	type NormalizedEntityMigrationConfiguration
+	type TargetEntityMigrationConfiguration
 } from "../../internal/recipes/index.js";
 import { generateUid } from "../../internal/test-recipe.js";
 
@@ -67,8 +67,8 @@ describe("migrateImports", () => {
 		project = new Project({
 			useInMemoryFileSystem: true,
 			compilerOptions: {
-				target: 99, // ESNext
-				module: 99 // ESNext
+				target: ScriptTarget.ESNext,
+				module: ModuleKind.ESNext
 			}
 		});
 	});

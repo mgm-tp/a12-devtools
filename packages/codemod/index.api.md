@@ -18,6 +18,18 @@ export interface CodemodCLIOptions {
 }
 
 // @public (undocumented)
+export interface ComponentPropRemovalConfiguration {
+    // (undocumented)
+    readonly componentName: string;
+    // (undocumented)
+    readonly namespaceName?: string;
+    // (undocumented)
+    readonly packageName: string;
+    // (undocumented)
+    readonly removedProps: ReadonlySet<string>;
+}
+
+// @public (undocumented)
 export function createCodemodCLI(options: CodemodCLIOptions): void;
 
 // @public
@@ -64,6 +76,9 @@ export interface RecipeMetadata {
     readonly id: string;
     readonly supportedVersions: string;
 }
+
+// @public
+export function removePropsFromComponent(sourceFile: SourceFile, configuration: ComponentPropRemovalConfiguration): void;
 
 // @public
 export interface SourceEntityMigrationConfiguration {

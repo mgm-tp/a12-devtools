@@ -3,8 +3,8 @@
 	"compilerOptions": {
 		"allowJs": true,
 		"checkJs": true,
-		"noEmit": true,
+		"lib": ["ESNext"],
 		"module": "NodeNext",
-		"lib": ["ESNext"]
+		"noEmit": true
 	}
 }

@@ -8,7 +8,7 @@
  * This source file is part of the mgm A12 Platform and available under
  * a choice of two different licenses:
  *
- * 1. Open-Source License – EUPL v1.2
+ * 1. Open-Source License - EUPL v1.2
  *    You may redistribute and/or modify this file under the terms of the
  *    European Union Public License, version 1.2 - see https://eupl.eu/.
  *
@@ -23,7 +23,7 @@
  *
  * Warranty Disclaimer (applies to either option)
  * ----------------------------------------------
- * THIS SOFTWARE IS PROVIDED “AS IS” AND WITHOUT WARRANTY OF ANY KIND,
+ * THIS SOFTWARE IS PROVIDED "AS IS" AND WITHOUT WARRANTY OF ANY KIND,
  * WHETHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
  * OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
  * NON-INFRINGEMENT, EXCEPT WHERE SUCH DISCLAIMERS ARE HELD TO BE
@@ -55,7 +55,7 @@ class ValidateHelper {
         outputDir.mkdirs()
     }
 
-    static final void validateKernelLibrary(final String requiredClass, final String libraryName, final FileCollection classpath) {
+    static final void validateKernelLibrary(final String requiredClass, final FileCollection classpath) {
         final def urls = classpath.files.collect { it.toURI().toURL() } as URL[]
         final def classLoader = new URLClassLoader(urls, (ClassLoader) null)
 
@@ -63,7 +63,7 @@ class ValidateHelper {
             Class.forName(requiredClass, false, classLoader)
         } catch (ClassNotFoundException e) {
             throw new IllegalStateException(
-                "Required kernel library '${libraryName}' is missing from the runtime classpath. " +
+                "Required kernel library 'com.mgmtp.a12.kernel:kernel-md-facade' is missing from the runtime classpath. " +
                 "Please add it as a dependency in your build.gradle.",
                 e
             )

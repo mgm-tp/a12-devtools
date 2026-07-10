@@ -8,7 +8,7 @@
  * This source file is part of the mgm A12 Platform and available under
  * a choice of two different licenses:
  *
- * 1. Open-Source License – EUPL v1.2
+ * 1. Open-Source License - EUPL v1.2
  *    You may redistribute and/or modify this file under the terms of the
  *    European Union Public License, version 1.2 - see https://eupl.eu/.
  *
@@ -23,49 +23,24 @@
  *
  * Warranty Disclaimer (applies to either option)
  * ----------------------------------------------
- * THIS SOFTWARE IS PROVIDED “AS IS” AND WITHOUT WARRANTY OF ANY KIND,
+ * THIS SOFTWARE IS PROVIDED "AS IS" AND WITHOUT WARRANTY OF ANY KIND,
  * WHETHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
  * OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
  * NON-INFRINGEMENT, EXCEPT WHERE SUCH DISCLAIMERS ARE HELD TO BE
  * LEGALLY INVALID. SEE THE RESPECTIVE LICENSE TEXT FOR DETAILS.
  */
-package com.mgmtp.a12.devtools.gradle.plugins.models.tasks
+package com.mgmtp.a12.devtools.wcf.converters;
 
-import groovy.json.JsonOutput
-import groovy.json.JsonSlurper
+/**
+ * Generates JS validation code for a single document model, given its JSON content.
+ * Seam so {@link ValidationCodeConverter} can be unit-tested without kernel codegen.
+ */
+@FunctionalInterface
+public interface ValidationJsGenerator {
 
-trait TaskTestHelpers {
-
-    File createDocumentFile(File inputDir, String filename, List<String> includes = []) {
-        def file = new File(inputDir, filename)
-        def modelReferences = includes.collect { includeName ->
-            [
-                purpose: 'include',
-                reference: includeName
-            ]
-        }
-
-        def header = [
-            id: filename.replace('.json', ''),
-            modelType: 'document'
-        ]
-        
-        if (!modelReferences.isEmpty()) {
-            header.modelReferences = modelReferences
-        }
-
-        file.text = JsonOutput.toJson([
-            header: header,
-            content: [:]
-        ])
-        return file
-    }
-
-    Map readCache(File cacheFile) {
-        cacheFile.exists() ? new JsonSlurper().parse(cacheFile) : [:]
-    }
-
-    void writeCache(File cacheFile, Map data) {
-        cacheFile.text = JsonOutput.toJson(data)
-    }
+    /**
+     * @param modelJson the (expanded) document model as a JSON string
+     * @return the generated plain JavaScript validation source as bytes
+     */
+    byte[] generate(String modelJson);
 }

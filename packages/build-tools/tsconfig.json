@@ -2,10 +2,11 @@
 	"extends": "@com.mgmtp.a12.devtools/tsconfig",
 	"include": ["./src"],
 	"compilerOptions": {
-		"outDir": "./lib",
-		"rootDir": "./src",
 		"declaration": false,
 		"declarationMap": false,
-		"noEmitOnError": false
+		"noEmitOnError": false,
+		"outDir": "./lib",
+		"rootDir": "./src",
+		"types": ["node"]
 	}
 }

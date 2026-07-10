@@ -8,7 +8,7 @@
  * This source file is part of the mgm A12 Platform and available under
  * a choice of two different licenses:
  *
- * 1. Open-Source License – EUPL v1.2
+ * 1. Open-Source License - EUPL v1.2
  *    You may redistribute and/or modify this file under the terms of the
  *    European Union Public License, version 1.2 - see https://eupl.eu/.
  *
@@ -23,7 +23,7 @@
  *
  * Warranty Disclaimer (applies to either option)
  * ----------------------------------------------
- * THIS SOFTWARE IS PROVIDED “AS IS” AND WITHOUT WARRANTY OF ANY KIND,
+ * THIS SOFTWARE IS PROVIDED "AS IS" AND WITHOUT WARRANTY OF ANY KIND,
  * WHETHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
  * OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
  * NON-INFRINGEMENT, EXCEPT WHERE SUCH DISCLAIMERS ARE HELD TO BE
@@ -31,11 +31,8 @@
  */
 package com.mgmtp.a12.devtools.gradle.plugins.models
 
-import com.mgmtp.a12.devtools.gradle.plugins.models.tasks.GenerateValidationCodeTask
-import com.mgmtp.a12.devtools.gradle.plugins.models.tasks.ExpandDocumentModelsTask
+import com.mgmtp.a12.devtools.gradle.plugins.models.tasks.ConvertWorkspaceModelsTask
 import com.mgmtp.a12.devtools.gradle.plugins.models.tasks.MigrateDocumentModelsTask
-import com.mgmtp.a12.devtools.gradle.plugins.models.tasks.UpdateDependenciesTask
-import com.mgmtp.a12.gradle.utils.ModelHelper
 
 import org.gradle.api.Action
 import org.gradle.api.Plugin
@@ -52,7 +49,8 @@ class PrepareModelsPlugin implements Plugin<Project> {
 
         project.prepareModels.inputDir.convention(project.layout.projectDirectory.dir('src'))
         project.prepareModels.outputDir.convention(project.layout.projectDirectory.dir('../../target/models'))
-        project.prepareModels.enableLog.convention(false)
+        project.prepareModels.generateValidationCode.convention(false)
+        project.prepareModels.validationConverterVersion.convention('0.4.0')
         project.prepareModels.eachFileAction.convention(new Action() {
             @Override
             void execute(Object fileCopyDetails) {
@@ -73,48 +71,45 @@ class PrepareModelsPlugin implements Plugin<Project> {
             }
         }()
 
-        // Create a logging configuration for the code generation tasks
+        // Create a logging configuration for the migrateDocumentModels task
         def logging = project.configurations.create('prepareModelsLogging') {
             visible = false
             canBeConsumed = false
             canBeResolved = true
-            description = 'Logging implementation for prepare-models code generation tasks.'
+            description = 'Logging implementation for the migrateDocumentModels task.'
             defaultDependencies { deps ->
                 deps.add(project.dependencies.create('org.slf4j:slf4j-simple:2.0.16'))
             }
         }
 
-        project.tasks.register('updateDependencies', UpdateDependenciesTask) {
-            inputDir.set(project.prepareModels.inputDir)
-            cacheFile.set(project.layout.buildDirectory.file('dmIncludeCache'))
-
-            mustRunAfter project.tasks.named('compileJava')
-            mustRunAfter project.tasks.named('processResources')
+        def conversion = project.configurations.create('prepareModelsConversion') {
+            visible = false
+            canBeConsumed = false
+            canBeResolved = true
+            description = 'WCF conversion classpath: the prepare-models-validation-converter library ' +
+                '(WcfConversionLauncher + ValidationCodeConverter) plus its transitive deps ' +
+                '(wcf-core, the RMC converter pipeline, kernel codegen, Spring Boot).'
         }
 
-        project.tasks.register('generateValidationCode', GenerateValidationCodeTask) {
-            dependsOn project.tasks.named('updateDependencies')
-            cacheFile.set(project.tasks.named('updateDependencies').flatMap { it.cacheFile })
-            enableLog.set(project.prepareModels.enableLog)
-
-            classpath project.buildscript.configurations.classpath
-            classpath logging
-
-            jvmArgs "-Dorg.slf4j.simpleLogger.defaultLogLevel=${taskLogLevel}"
-
-            inputDir.set(project.prepareModels.inputDir)
-            outputDir.set(project.layout.buildDirectory.dir('code'))
+        // Dependencies are added after the project is evaluated so that user-configured
+        // extension properties (kernelMdFacadeVersion, validationConverterVersion) are
+        // fully resolved before they are read.
+        project.afterEvaluate {
+            project.dependencies.add('prepareModelsConversion',
+                "com.mgmtp.a12.devtools.plugins:prepare-models-validation-converter:${project.prepareModels.validationConverterVersion.get()}"
+            )
+            String kernelVersion = project.prepareModels.kernelMdFacadeVersion.orNull
+                    ?: detectKernelVersionFromBuildscript(project)
+            if (kernelVersion != null) {
+                project.dependencies.add('prepareModelsConversion', "com.mgmtp.a12.kernel:kernel-md-facade:${kernelVersion}")
+            }
         }
 
-        project.tasks.register('expandDocumentModels', ExpandDocumentModelsTask) {
-            dependsOn project.tasks.named('updateDependencies')
-            cacheFile.set(project.tasks.named('updateDependencies').flatMap { it.cacheFile })
-            enableLog.set(project.prepareModels.enableLog)
+        project.tasks.register('convertWorkspaceModels', ConvertWorkspaceModelsTask) {
+            conversionClasspath.setFrom(conversion)
 
-            classpath project.buildscript.configurations.classpath
-            classpath logging
-
-            jvmArgs "-Dorg.slf4j.simpleLogger.defaultLogLevel=${taskLogLevel}"
+            generateValidationCode.set(project.prepareModels.generateValidationCode)
+            validationCodeOutputDir.set(project.layout.buildDirectory.dir('expanded-code'))
 
             inputDir.set(project.prepareModels.inputDir)
             outputDir.set(project.layout.buildDirectory.dir('expanded'))
@@ -135,15 +130,19 @@ class PrepareModelsPlugin implements Plugin<Project> {
         }
 
         project.tasks.register('mergeOutputs', Copy) {
-            dependsOn project.tasks.named('generateValidationCode'), project.tasks.named('expandDocumentModels')
+            dependsOn project.tasks.named('convertWorkspaceModels')
 
-            from project.tasks.named('generateValidationCode').flatMap { it.outputDir }
-            from project.tasks.named('expandDocumentModels').flatMap { it.outputDir }
+            from(project.tasks.named('convertWorkspaceModels').flatMap { it.outputDir }) {
+                exclude '**/*_ei.json'
+            }
+            // Validation JS generated inside the WCF converter (build/expanded-code). Empty when
+            // generateValidationCode is off, so this contributes nothing in that case.
+            from project.tasks.named('convertWorkspaceModels').flatMap { it.validationCodeOutputDir }
 
             into project.prepareModels.outputDir
 
             group = 'prepare-models-plugin'
-            description = 'Helper task to merge outputs of code generation and document model expansion.'
+            description = 'Helper task to merge the WCF workspace conversion output (expanded models + validation code).'
         }
 
         project.tasks.register('prepareModels') {
@@ -160,6 +159,21 @@ class PrepareModelsPlugin implements Plugin<Project> {
 
             workingDir project.prepareModels.inputDir.get()
             args project.prepareModels.inputDir.get()
+        }
+    }
+
+    private static String detectKernelVersionFromBuildscript(Project project) {
+        try {
+            def artifact = project.buildscript.configurations.classpath
+                    .resolvedConfiguration.resolvedArtifacts
+                    .find {
+                        it.moduleVersion.id.module.group == 'com.mgmtp.a12.kernel' &&
+                        it.moduleVersion.id.module.name == 'kernel-md-facade'
+                    }
+            return artifact?.moduleVersion?.id?.version
+        } catch (Exception e) {
+            project.logger.debug('[prepare-models] Could not auto-detect kernel-md-facade version: {}', e.message)
+            return null
         }
     }
 }

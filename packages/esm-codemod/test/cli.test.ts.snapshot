@@ -10,8 +10,8 @@ exports[`esm-codemod > basic 1`] = `
 [LOG] === Migrating file ROOT/temp/basic/math/sum.ts ===
 
 Files   :  2
-Migrated:  7
-Skipped :  7
+Migrated:  5
+Skipped :  3
 Error   :  0
 Done
 `;
@@ -25,23 +25,13 @@ exports[`esm-codemod > basic 2`] = `
 
 exports[`esm-codemod > basic 3`] = `
 // File: ./basic/main.ts
-import { inspect } from "node:util";
 import Fs from "node:fs";
+import { inspect } from "node:util";
 
-import { type ActionCreator, actionCreatorFactory } from "typescript-fsa";
-import { css, styled } from "styled-components";
-import React from "react/jsx-runtime";
-
-import { HashMap } from "@com.mgmtp.a12.utils/utils-collections";
-import { depthFirstSearch } from "@com.mgmtp.a12.utils/utils-collections/lib/search/index.js";
-import { DirectedGraph } from "@com.mgmtp.a12.utils/utils-collections/lib/DirectedGraph.js";
-
+import Data from "./data.json";
 import { sum } from "./math/index.js";
 import { multiple } from "./math/multiple.js";
 import { ONE } from "./one.js";
-import Data from "./data.json";
-
-console.log(React);
 
 console.log(Fs);
 console.log(ONE);
@@ -49,22 +39,6 @@ console.log(inspect(Data));
 
 console.log(sum(1, 2));
 console.log(multiple(3, 4));
-
-console.log(HashMap);
-console.log(depthFirstSearch);
-console.log(DirectedGraph);
-
-console.log(actionCreatorFactory);
-console.log({} as ActionCreator<unknown>);
-
-console.log(
-  styled.div(() => {
-    return css\`
-      width: 100%;
-    \`;
-  }),
-);
-
 `;
 
 exports[`esm-codemod > basic 4`] = `
@@ -110,34 +84,12 @@ exports[`esm-codemod > debug 1`] = `
 }
 
 [LOG] === Migrating file ROOT/temp/basic/main.ts ===
-[DEB] Migrating import: "node:util"
 [DEB] Migrating import: "fs"
 [DEB] Detect library import
 [DEB] Detect builtin Node module => Prepend "node:"
 [DEB] Migrated import:  node:fs
-[DEB] Migrating import: "typescript-fsa"
-[DEB] Detect library import
-[DEB] Import from package name => Skip
-[DEB] Migrating import: "styled-components"
-[DEB] Detect library import
-[DEB] Import from package name => Skip
-[DEB] Migrating import: "react/jsx-runtime"
-[DEB] Detect library import
-[DEB] Detect 'exports' field
-[DEB] Migrating import: "@com.mgmtp.a12.utils/utils-collections"
-[DEB] Detect library import
-[DEB] Import from package name => Skip
-[DEB] Migrating import: "@com.mgmtp.a12.utils/utils-collections/lib/search"
-[DEB] Detect library import
-[DEB] Checking js file: ROOT/node_modules/@com.mgmtp.a12.utils/utils-collections/lib/search.js
-[DEB] Checking directory: ROOT/node_modules/@com.mgmtp.a12.utils/utils-collections/lib/search
-[DEB] Found index.js file => Append '/index.js'
-[DEB] Migrated import:  @com.mgmtp.a12.utils/utils-collections/lib/search/index.js
-[DEB] Migrating import: "@com.mgmtp.a12.utils/utils-collections/lib/DirectedGraph"
-[DEB] Detect library import
-[DEB] Checking js file: ROOT/node_modules/@com.mgmtp.a12.utils/utils-collections/lib/DirectedGraph.js
-[DEB] Found js file: ROOT/node_modules/@com.mgmtp.a12.utils/utils-collections/lib/DirectedGraph.js => Append '.js'
-[DEB] Migrated import:  @com.mgmtp.a12.utils/utils-collections/lib/DirectedGraph.js
+[DEB] Migrating import: "node:util"
+[DEB] Migrating import: "./data.json"
 [DEB] Migrating import: "./math"
 [DEB] Detect relative import
 [DEB] Checking file: ROOT/temp/basic/math.ts
@@ -151,7 +103,6 @@ exports[`esm-codemod > debug 1`] = `
 [DEB] Found file: ROOT/temp/basic/math/multiple.ts
 [DEB] Migrated import:  ./math/multiple.js
 [DEB] Migrating import: "./one.js"
-[DEB] Migrating import: "./data.json"
 
 [LOG] === Migrating file ROOT/temp/basic/math/index.ts ===
 [DEB] Migrating export: "./sum"
@@ -170,8 +121,8 @@ exports[`esm-codemod > debug 1`] = `
 [LOG] === Migrating file ROOT/temp/basic/math/sum.ts ===
 
 Files   :  2
-Migrated:  7
-Skipped :  7
+Migrated:  5
+Skipped :  3
 Error   :  0
 Done
 `;
@@ -214,15 +165,12 @@ exports[`esm-codemod > not installed package 1`] = `
 [DEB] Detect library import
 [DEB] Migrating import: "react/jsx"
 [DEB] Detect library import
-[DEB] Detect 'exports' field
 [DEB] Migrating import: "@com.mgmtp.a12.utils/utils-collections/notFound"
 [DEB] Detect library import
-[DEB] Checking js file: ROOT/node_modules/@com.mgmtp.a12.utils/utils-collections/notFound.js
-[DEB] Checking directory: ROOT/node_modules/@com.mgmtp.a12.utils/utils-collections/notFound
 
 ROOT/temp/error/main.ts:1:0 Cannot find library with name 'reatc'. Please verify that the package is declared at least as devDependency.
-ROOT/temp/error/main.ts:2:0 Can not find expose API with path './jsx' in package 'react', available paths: '.', './package.json', './jsx-runtime', './jsx-dev-runtime', './compiler-runtime'
-ROOT/temp/error/main.ts:4:0 Cannot migrate import: @com.mgmtp.a12.utils/utils-collections/notFound
+ROOT/temp/error/main.ts:2:0 Cannot find library with name 'react'. Please verify that the package is declared at least as devDependency.
+ROOT/temp/error/main.ts:4:0 Cannot find library with name '@com.mgmtp.a12.utils/utils-collections'. Please verify that the package is declared at least as devDependency.
 Files   :  1
 Migrated:  0
 Skipped :  0

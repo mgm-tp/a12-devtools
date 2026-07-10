@@ -1,6 +1,6 @@
 {
 	"name": "@com.mgmtp.a12.devtools/why-did-you-render",
-	"version": "2.1.0",
+	"version": "2.1.1",
 	"type": "module",
 	"description": "Setup tools for WhyDidYouRender",
 	"author": "mgm technology partners",

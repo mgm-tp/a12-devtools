@@ -1,8 +1,10 @@
 plugins {
-    id 'com.diffplug.spotless' version '8.1.0'
-    id 'org.cyclonedx.bom' version '3.0.1' apply false
+    alias(libs.plugins.spotless)
+    alias(libs.plugins.cyclonedx) apply false
+    alias(libs.plugins.version.catalog.update)
 }
 
+import nl.littlerobots.vcu.plugin.resolver.VersionSelectors
 import org.cyclonedx.model.ExternalReference
 
 if (file('publish/build.gradle').exists()) {
@@ -44,5 +46,12 @@ subprojects { subproj ->
                 licenseHeaderFile rootProject.file('license_header.txt')
             }
         }
+    }
+}
+
+versionCatalogUpdate {
+    sortByKey = false
+    versionSelector {
+        VersionSelectors.PREFER_STABLE.select(it) && !it.candidate.version.contains('SNAPSHOT')
     }
 }

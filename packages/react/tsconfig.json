@@ -2,8 +2,9 @@
 	"extends": "@com.mgmtp.a12.devtools/tsconfig",
 	"include": ["./src"],
 	"compilerOptions": {
+		"noEmitOnError": false,
 		"outDir": "./lib",
 		"rootDir": "./src",
-		"noEmitOnError": false
+		"types": ["node"]
 	}
 }

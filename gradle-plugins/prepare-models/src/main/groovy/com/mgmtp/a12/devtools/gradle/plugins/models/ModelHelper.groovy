@@ -8,7 +8,7 @@
  * This source file is part of the mgm A12 Platform and available under
  * a choice of two different licenses:
  *
- * 1. Open-Source License – EUPL v1.2
+ * 1. Open-Source License - EUPL v1.2
  *    You may redistribute and/or modify this file under the terms of the
  *    European Union Public License, version 1.2 - see https://eupl.eu/.
  *
@@ -23,20 +23,13 @@
  *
  * Warranty Disclaimer (applies to either option)
  * ----------------------------------------------
- * THIS SOFTWARE IS PROVIDED “AS IS” AND WITHOUT WARRANTY OF ANY KIND,
+ * THIS SOFTWARE IS PROVIDED "AS IS" AND WITHOUT WARRANTY OF ANY KIND,
  * WHETHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
  * OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
  * NON-INFRINGEMENT, EXCEPT WHERE SUCH DISCLAIMERS ARE HELD TO BE
  * LEGALLY INVALID. SEE THE RESPECTIVE LICENSE TEXT FOR DETAILS.
  */
-package com.mgmtp.a12.gradle.utils
-
-import com.fasterxml.jackson.core.JsonFactory
-import com.fasterxml.jackson.core.JsonParser
-import com.fasterxml.jackson.core.JsonToken
-
-import groovy.json.JsonOutput
-import groovy.json.JsonSlurper
+package com.mgmtp.a12.devtools.gradle.plugins.models
 
 class ModelHelper {
     static final boolean isFormModel(final File file) {
@@ -50,7 +43,11 @@ class ModelHelper {
     static final boolean isModelType(final File file, final String modelType, int numberOfLines = 10) {
         boolean isType = false
 
-        if (file.name.endsWith('.json')) {
+        // file.isFile() guards against paths that do not exist (or are directories): Gradle
+        // continuous build evaluates content-reading input/exclude filters against deleted
+        // files when reacting to a delete event, and an unguarded read would throw
+        // FileNotFoundException on the file-watch thread, killing the watcher.
+        if (file.name.endsWith('.json') && file.isFile()) {
             file.withReader { reader ->
                 def line = null
                 int lineCount = 0
@@ -63,35 +60,5 @@ class ModelHelper {
             }
         }
         return isType
-    }
-
-    static final List<String> getIncludes(final File documentModel) {
-        final def parser = new JsonFactory().createParser(documentModel)
-        final List<String> includes = []
-
-        final String parentDir = documentModel.getParent()
-
-        try {
-            while (parser.nextToken() != null) {
-                if (parser.currentToken() == JsonToken.FIELD_NAME && parser.currentName() == "modelReferences") {
-                    parser.nextToken() // Move to START_ARRAY
-
-                    while (parser.nextToken() != JsonToken.END_ARRAY) {
-                        while (parser.nextToken() != JsonToken.END_OBJECT) {
-                            if (parser.currentToken() == JsonToken.FIELD_NAME && parser.currentName() == "purpose") {
-                                parser.nextToken()
-                                if (parser.getText() == "include" && parser.nextToken() == JsonToken.FIELD_NAME && parser.currentName() == "reference") {
-                                    parser.nextToken()
-                                    includes.add(new File(parentDir, "${parser.getText()}.json").path)
-                                }
-                            }
-                        }
-                    }
-                    return includes
-                }
-            }
-        } finally {
-            parser.close()
-        }
     }
 }

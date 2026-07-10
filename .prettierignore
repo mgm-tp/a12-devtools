@@ -12,3 +12,7 @@ licenses/
 # Exclude lockfiles and workspace metadata
 *.yaml
 !pnpm-workspace.yaml
+
+# Ignore plan/spec files
+**/plans/**
+**/specs/**

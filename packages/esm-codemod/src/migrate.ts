@@ -8,7 +8,7 @@
  * This source file is part of the mgm A12 Platform and available under
  * a choice of two different licenses:
  *
- * 1. Open-Source License – EUPL v1.2
+ * 1. Open-Source License - EUPL v1.2
  *    You may redistribute and/or modify this file under the terms of the
  *    European Union Public License, version 1.2 - see https://eupl.eu/.
  *
@@ -23,7 +23,7 @@
  *
  * Warranty Disclaimer (applies to either option)
  * ----------------------------------------------
- * THIS SOFTWARE IS PROVIDED “AS IS” AND WITHOUT WARRANTY OF ANY KIND,
+ * THIS SOFTWARE IS PROVIDED "AS IS" AND WITHOUT WARRANTY OF ANY KIND,
  * WHETHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
  * OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
  * NON-INFRINGEMENT, EXCEPT WHERE SUCH DISCLAIMERS ARE HELD TO BE
@@ -35,13 +35,13 @@ import Path from "node:path";
 import { glob } from "glob";
 import { Project } from "ts-morph";
 
-import { Reporter } from "./reporter.js";
+import { type Logger, createLogger } from "./logger.js";
 import { migrateAdHoc } from "./migrate-ad-hoc.js";
 import { migrateImport } from "./migrate-import.js";
-import { MigrationType } from "./migration-result.js";
-import { checkFile, checkDirectory } from "./utils.js";
-import { type Logger, createLogger } from "./logger.js";
 import { tsExtensions } from "./migrate-relative-import.js";
+import { MigrationType } from "./migration-result.js";
+import { Reporter } from "./reporter.js";
+import { checkDirectory, checkFile } from "./utils.js";
 
 export interface Context {
 	readonly logger: Logger;

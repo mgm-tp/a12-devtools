@@ -18,9 +18,9 @@
 		"verify:fix": "pnpm run \"/^(format|lint):fix$/\"",
 		"format": "prettier . --check --cache --cache-strategy metadata",
 		"format:fix": "prettier . --write",
-		"lint": "node --run eslint -- --cache",
-		"lint:fix": "node --run eslint -- --fix",
-		"eslint": "eslint --flag unstable_native_nodejs_ts_config ."
+		"lint:fix": "node --run lint -- --fix",
+		"lint:onlyErrors": "node --run lint -- --quiet",
+		"lint": "eslint --flag unstable_native_nodejs_ts_config . --cache"
 	},
 	"devDependencies": {
 		"@com.mgmtp.a12.devtools/eslint-config": "workspace:^",
@@ -30,6 +30,6 @@
 		"eslint-plugin-notice": "catalog:",
 		"prettier": "catalog:"
 	},
-	"packageManager": "pnpm@11.1.2",
+	"packageManager": "pnpm@11.0.4",
 	"prettier": "@com.mgmtp.a12.devtools/prettier-config"
 }
