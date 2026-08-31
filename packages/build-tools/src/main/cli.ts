@@ -34,10 +34,12 @@
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
 
-import { program } from "commander";
+import { program, type Command as CommanderCommand } from "commander";
 
 import { analyzeDependencies } from "./analyze-dependencies.js";
+import { changelog } from "./changelog.js";
 import { detectCycles } from "./detect-cycles.js";
+import type { Command } from "./interfaces.js";
 import { perEnv } from "./per-env.js";
 import { validateDependencies } from "./validate-dependencies.js";
 import { verifyTsCompat } from "./verify-ts-compat.js";
@@ -47,7 +49,8 @@ const commands = [
 	detectCycles,
 	analyzeDependencies,
 	verifyTsCompat,
-	perEnv
+	perEnv,
+	changelog
 ];
 
 // read package.json for package information
@@ -61,15 +64,24 @@ const pkg = JSON.parse(readFileSync(packageJSONPath, "utf8"));
 
 program.version(pkg.version).allowUnknownOption(false);
 
-commands.forEach(command => {
-	const c = program
+function addCommand(rootCommand: CommanderCommand, command: Command): void {
+	const c = rootCommand
 		.command(command.name)
 		.description(command.description)
 		.option("-s, --silent");
 
 	command.options?.forEach(option => c.option(...option));
+	command.arguments?.forEach(argument => c.argument(...argument));
 
 	c.action(command.action);
+
+	for (const subCommand of command.subCommands ?? []) {
+		addCommand(c, subCommand);
+	}
+}
+
+commands.forEach(command => {
+	addCommand(program, command);
 });
 
 program.parse(process.argv);

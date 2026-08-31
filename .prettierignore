@@ -4,8 +4,6 @@
 *.api.md
 
 packages/build-tools/resources/detect-cycles
-packages/esm-codemod/**/fixture/
-packages/cyclonedx-node-npm/**
 
 licenses/
 

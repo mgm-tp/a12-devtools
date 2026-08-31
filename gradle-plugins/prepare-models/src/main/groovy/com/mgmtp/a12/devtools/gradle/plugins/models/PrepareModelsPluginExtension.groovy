@@ -53,13 +53,40 @@ abstract class PrepareModelsPluginExtension {
     abstract Property<Boolean> getGenerateValidationCode()
 
     /**
+     * When {@code true}, the {@code DataDocumentValidationConverter} (order 200) is enabled inside the
+     * forked WCF conversion JVM. It validates every data document against its document model and throws
+     * with a full list of broken files if any are invalid.
+     * Default {@code false}: validation is skipped.
+     */
+    abstract Property<Boolean> getValidateDataDocuments()
+
+    /**
+     * Version of the {@code validate-data-models} library
+     * ({@code com.mgmtp.a12.devtools.plugins:validate-data-models:<version>}) resolved onto the forked
+     * conversion JVM classpath when {@link #getValidateDataDocuments()} is {@code true}.
+     * Default {@code "0.1.0"}.
+     */
+    abstract Property<String> getValidateDataModelsVersion()
+
+    /**
      * Version of the prepare-models-validation-converter library
      * {@code com.mgmtp.a12.devtools.plugins:prepare-models-validation-converter:<version>} resolved onto
-     * the forked conversion JVM classpath. The library carries WcfConversionLauncher + ValidationCodeConverter
-     * and pulls the WCF core, the RMC converter pipeline, and kernel codegen transitively, so those versions
-     * are fixed by this library rather than overridable per consumer.
+     * the forked conversion JVM classpath. The library carries ValidationCodeConverter and pulls the WCF
+     * core, the RMC converter pipeline, and kernel codegen transitively, so those versions are fixed by
+     * this library rather than overridable per consumer.
      */
     abstract Property<String> getValidationConverterVersion()
+
+    /**
+     * Version of {@code dataservices-wcf-cli}
+     * ({@code com.mgmtp.a12.dataservices.wcf:dataservices-wcf-cli:<version>}) resolved onto the forked
+     * conversion JVM classpath. {@code ConvertWorkspaceModelsTask} runs WCF's own CLI class directly as
+     * the forked process's {@code mainClass}, in "library mode" (converters already resolved onto the
+     * classpath, so no {@code -c} jar is needed). Must stay compatible with the
+     * {@code dataservices-wcf-core} version pulled in transitively by
+     * {@link #getValidationConverterVersion()}.
+     */
+    abstract Property<String> getWcfCliVersion()
 
     /**
      * Version of {@code kernel-md-facade} placed on the forked WCF conversion JVM classpath

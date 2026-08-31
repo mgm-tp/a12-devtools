@@ -10,6 +10,7 @@
 	},
 	"type": "module",
 	"scripts": {
+		"build": "node --run verify && node --run compile && node --run test",
 		"clean": "pnpm -r --parallel clean",
 		"compile": "pnpm -r compile",
 		"start": "pnpm -r --parallel watch",
@@ -30,6 +31,6 @@
 		"eslint-plugin-notice": "catalog:",
 		"prettier": "catalog:"
 	},
-	"packageManager": "pnpm@11.0.4",
+	"packageManager": "pnpm@11.13.0",
 	"prettier": "@com.mgmtp.a12.devtools/prettier-config"
 }

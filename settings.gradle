@@ -15,6 +15,8 @@ dependencyResolutionManagement {
 include 'gradle-plugins:build-utilities'
 include 'gradle-plugins:prepare-models'
 include 'gradle-plugins:prepare-models-validation-converter'
+include 'gradle-plugins:integration'
+include 'gradle-plugins:validate-data-models'
 
 if (file("internal").exists()) {
     include 'internal'
@@ -28,12 +30,20 @@ if (file("gradle-plugins/performance-test").exists()) {
     include 'gradle-plugins:performance-test'
 }
 
+if (file("gradle-plugins/atlas-security").exists()) {
+    include 'gradle-plugins:atlas-security'
+}
+
 if (file("gradle-plugins/sbom").exists()) {
     include 'gradle-plugins:sbom'
 }
 
 if (file("gradle-plugins/sbom-cleaner").exists()) {
     include 'gradle-plugins:sbom-cleaner'
+}
+
+if (file("gradle-plugins/third-party-notices").exists()) {
+    include 'gradle-plugins:third-party-notices'
 }
 
 file('packages').eachDir { dir ->

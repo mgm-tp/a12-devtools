@@ -42,12 +42,7 @@ const licenseHeaderWithInterpreterLine = `#!/usr/bin/env node${EOL}${licenseHead
 
 export default defineConfig([
 	globalIgnores(
-		[
-			"**/{lib,build}",
-			"packages/cyclonedx-node-npm",
-			"packages/build-tools/resources/detect-cycles",
-			"packages/esm-codemod/**/fixture/"
-		],
+		["**/{lib,build}", "packages/build-tools/resources/detect-cycles"],
 		"workspace-ignores"
 	),
 	...strict,

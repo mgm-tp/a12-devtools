@@ -60,7 +60,10 @@ abstract class ConvertWorkspaceModelsTask extends DefaultTask {
     static final String WCF_OUTPUT_SUBDIR = 'wcf-output'
     static final String WCF_PRODUCED_NESTING = 'data/models'
     static final String WCF_PRODUCED_CODE_NESTING = 'data/code'
-    static final String LAUNCHER_MAIN_CLASS = 'com.mgmtp.a12.devtools.wcf.WcfConversionLauncher'
+    // WCF's own CLI entry point, run in "library mode": converters are already resolved onto
+    // conversionClasspath, so no -c jar is needed - WcfCli's @SpringBootApplication(scanBasePackages
+    // = "com.mgmtp.a12") finds them the same way it finds RMC's own converter pipeline.
+    static final String WCF_CLI_MAIN_CLASS = 'com.mgmtp.a12.dataservices.wcf.WcfCli'
 
     @Inject
     abstract ExecOperations getExecOperations()
@@ -81,10 +84,10 @@ abstract class ConvertWorkspaceModelsTask extends DefaultTask {
     abstract DirectoryProperty getOutputDir()
 
     /**
-     * Full classpath for the forked conversion JVM: the prepare-models-validation-converter library plus
-     * its transitive deps (wcf-core, the RMC converter pipeline, kernel codegen, Spring Boot). The launcher
-     * {@code WcfConversionLauncher} is run from this classpath. Wired by the plugin from a single resolvable
-     * configuration; consumers do not set this directly.
+     * Full classpath for the forked conversion JVM: {@code dataservices-wcf-cli} (WCF's own CLI, run
+     * directly as {@code mainClass}) plus the prepare-models-validation-converter library and their
+     * transitive deps (wcf-core, the RMC converter pipeline, kernel codegen, Spring Boot). Wired by the
+     * plugin from a single resolvable configuration; consumers do not set this directly.
      */
     @Classpath
     abstract ConfigurableFileCollection getConversionClasspath()
@@ -95,6 +98,15 @@ abstract class ConvertWorkspaceModelsTask extends DefaultTask {
     @Input
     @Optional
     abstract Property<Boolean> getGenerateValidationCode()
+
+    /**
+     * When true, the DataDocumentValidationConverter is enabled via
+     * {@code -Ddata.document.validation.enabled=true}. The converter reads every data document from
+     * disk and throws with a full list of broken files if any fail validation.
+     */
+    @Input
+    @Optional
+    abstract Property<Boolean> getValidateDataDocuments()
 
     /**
      * Validation JS produced inside WCF ({@code <wcfOut>/data/code/**}), copied here so
@@ -116,13 +128,13 @@ abstract class ConvertWorkspaceModelsTask extends DefaultTask {
 
     /**
      * Guards against a plugin misconfiguration: the conversion classpath must be wired (non-empty),
-     * otherwise the forked JVM would have no launcher/converters to run.
+     * otherwise the forked JVM would have no WcfCli/converters to run.
      */
     void validateConversionClasspath() {
         if (conversionClasspath.empty) {
             throw new IllegalStateException(
-                'conversionClasspath is empty. The prepare-models plugin must wire the ' +
-                'prepare-models-validation-converter library and its transitive dependencies.'
+                'conversionClasspath is empty. The prepare-models plugin must wire dataservices-wcf-cli, ' +
+                'the prepare-models-validation-converter library, and their transitive dependencies.'
             )
         }
     }
@@ -176,6 +188,7 @@ abstract class ConvertWorkspaceModelsTask extends DefaultTask {
         validateConversionClasspath()
 
         def codegenEnabled = generateValidationCode.getOrElse(false)
+        def validateDocs = validateDataDocuments.getOrElse(false)
 
         cleanOutputDir()
         wcfOutputDir.deleteDir()
@@ -187,14 +200,18 @@ abstract class ConvertWorkspaceModelsTask extends DefaultTask {
         )
 
         execOperations.javaexec {
-            // Run the WCF library directly via our launcher. The whole conversion classpath (wcf-core +
-            // RMC pipeline + our ValidationCodeConverter + kernel codegen + Spring Boot) is resolved by
-            // Gradle and placed on -cp; the launcher boots Spring, which component-scans com.mgmtp.a12 and
-            // runs every @WcfConverter in order. No CLI, no -c jar, no classloader augmentation.
+            // Run WCF's own CLI directly, in library mode: the whole conversion classpath (wcf-cli +
+            // wcf-core + RMC pipeline + our ValidationCodeConverter/DataDocumentValidationConverter +
+            // kernel codegen + Spring Boot) is resolved by Gradle and placed on -cp, so WcfCli's own
+            // @SpringBootApplication(scanBasePackages = "com.mgmtp.a12") finds every @WcfConverter
+            // already on the classpath - no -c jar, no classloader augmentation, no launcher of our own.
             it.classpath(conversionClasspath)
-            it.mainClass.set(LAUNCHER_MAIN_CLASS)
+            it.mainClass.set(WCF_CLI_MAIN_CLASS)
             if (codegenEnabled) {
                 it.systemProperty('validation.codegen.enabled', 'true')
+            }
+            if (validateDocs) {
+                it.systemProperty('data.document.validation.enabled', 'true')
             }
             it.args inputDir.get().asFile.absolutePath
             it.args wcfOutputDir.absolutePath

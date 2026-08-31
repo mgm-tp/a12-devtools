@@ -1,0 +1,13 @@
+{
+	"extends": "@com.mgmtp.a12.devtools/tsconfig",
+	"include": ["./src"],
+	"compilerOptions": {
+		"noEmitOnError": false,
+		"outDir": "./lib",
+		"paths": {
+			"asciidoctor": ["./node_modules/asciidoctor/types/index.d.ts"]
+		},
+		"rootDir": "./src",
+		"types": ["node"]
+	}
+}

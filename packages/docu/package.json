@@ -1,0 +1,35 @@
+{
+	"name": "@com.mgmtp.a12.devtools/docu",
+	"version": "0.1.0",
+	"type": "module",
+	"description": "Shared asciidoctor documentation builder for A12",
+	"author": "mgm technology partners",
+	"license": "(EUPL-1.2 OR LicenseRef-commercial)",
+	"engines": {
+		"node": ">=24"
+	},
+	"scripts": {
+		"clean": "git clean -fx .",
+		"compile": "tsc",
+		"watch": "tsc -w",
+		"test": "node --test --test-reporter dot \"lib/*.spec.js\""
+	},
+	"bin": "./lib/cli.js",
+	"dependencies": {
+		"asciidoctor": "catalog:"
+	},
+	"devDependencies": {
+		"@com.mgmtp.a12.devtools/tsconfig": "workspace:^",
+		"@types/node": "catalog:",
+		"typescript": "catalog:"
+	},
+	"files": [
+		"lib",
+		"!lib/**/*.spec.*",
+		"LICENSE",
+		"NOTICE",
+		"THIRD_PARTY_NOTICES",
+		"licenses"
+	],
+	"exports": "./lib/index.js"
+}

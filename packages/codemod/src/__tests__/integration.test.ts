@@ -38,8 +38,10 @@ import path from "path";
 
 import { execa } from "execa";
 import stripAnsi from "strip-ansi";
+import { Project } from "ts-morph";
 import { afterEach, describe, expect, it } from "vitest";
 
+import { migrateImports } from "../internal/recipes/index.js";
 import { generateUid } from "../internal/test-recipe.js";
 
 const FIXTURES_DIR = path.join(import.meta.dirname, "__fixtures__");
@@ -510,6 +512,40 @@ describe("Factory Integration Tests", () => {
 
 			const cleanOutput = stripAnsi(stdout);
 			expect(cleanOutput).toContain("Found 3 recipe(s) for version v2.5.0");
+		});
+	});
+
+	describe("declaration files from a real tsconfig", () => {
+		it("should load, rewrite and save a .d.ts file", async () => {
+			const testDir = await copyFixtureToTmp(
+				"declaration-file",
+				"declaration-file"
+			);
+			const tsconfigPath = path.join(testDir, "tsconfig.json");
+			const dtsPath = path.join(testDir, "types.d.ts");
+
+			// Load: the same way the run handlers build their project
+			const project = new Project({ tsConfigFilePath: tsconfigPath });
+
+			expect(
+				project.getSourceFiles().map(file => path.basename(file.getFilePath()))
+			).toContain("types.d.ts");
+
+			// Rewrite
+			const sourceFile = project.getSourceFileOrThrow(dtsPath);
+			migrateImports(sourceFile, {
+				pathMigrations: [{ from: "@scope/pkg/lib/**", to: "@scope/pkg" }]
+			});
+
+			expect(sourceFile.getText()).toContain(`from "@scope/pkg"`);
+			expect(sourceFile.getText()).not.toContain("/lib/theme");
+
+			// Save
+			await project.save();
+
+			const saved = await Fs.readFile(dtsPath, "utf-8");
+			expect(saved).toContain(`from "@scope/pkg"`);
+			expect(saved).not.toContain("/lib/theme");
 		});
 	});
 });

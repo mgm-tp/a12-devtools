@@ -7,6 +7,26 @@ plugins {
 
 apply from: "${rootDir}/gradle-plugins/plugin-common.gradle"
 
+dependencies {
+    // groovy.yaml.YamlSlurper is used at runtime by Helper.setVersionInWorkspace, and
+    // Groovy's YAML support is not part of the Groovy that Gradle bundles. It must
+    // therefore be on the runtime classpath, so consumers applying this plugin get it
+    // transitively instead of having to declare it themselves.
+    implementation libs.groovy.yaml
+
+    testImplementation libs.spock.core
+    testImplementation gradleTestKit()
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+}
+
+test {
+    useJUnitPlatform()
+    testLogging {
+        events 'passed', 'skipped', 'failed'
+        exceptionFormat = 'full'
+    }
+}
+
 gradlePlugin {
     plugins {
         buildUtilities {

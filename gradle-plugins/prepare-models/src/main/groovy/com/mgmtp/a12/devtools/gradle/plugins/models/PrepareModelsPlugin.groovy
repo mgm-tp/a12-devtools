@@ -50,7 +50,13 @@ class PrepareModelsPlugin implements Plugin<Project> {
         project.prepareModels.inputDir.convention(project.layout.projectDirectory.dir('src'))
         project.prepareModels.outputDir.convention(project.layout.projectDirectory.dir('../../target/models'))
         project.prepareModels.generateValidationCode.convention(false)
-        project.prepareModels.validationConverterVersion.convention('0.4.0')
+        project.prepareModels.validationConverterVersion.convention('0.5.0')
+        // No stable dataservices-wcf-cli release exists yet at a version compatible with the pinned
+        // wcf-core; move to a released version once upstream cuts one (see prepare-models-validation-
+        // converter/build.gradle for the matching wcf-core pin).
+        project.prepareModels.wcfCliVersion.convention('1.0.1-build.20260729')
+        project.prepareModels.validateDataDocuments.convention(false)
+        project.prepareModels.validateDataModelsVersion.convention('0.1.0')
         project.prepareModels.eachFileAction.convention(new Action() {
             @Override
             void execute(Object fileCopyDetails) {
@@ -86,9 +92,10 @@ class PrepareModelsPlugin implements Plugin<Project> {
             visible = false
             canBeConsumed = false
             canBeResolved = true
-            description = 'WCF conversion classpath: the prepare-models-validation-converter library ' +
-                '(WcfConversionLauncher + ValidationCodeConverter) plus its transitive deps ' +
-                '(wcf-core, the RMC converter pipeline, kernel codegen, Spring Boot).'
+            description = 'WCF conversion classpath: dataservices-wcf-cli (WCF\'s own CLI entry point, run ' +
+                'directly as the forked mainClass) plus the prepare-models-validation-converter library ' +
+                '(ValidationCodeConverter) and their transitive deps (wcf-core, the RMC converter ' +
+                'pipeline, kernel codegen, Spring Boot).'
         }
 
         // Dependencies are added after the project is evaluated so that user-configured
@@ -96,8 +103,16 @@ class PrepareModelsPlugin implements Plugin<Project> {
         // fully resolved before they are read.
         project.afterEvaluate {
             project.dependencies.add('prepareModelsConversion',
+                "com.mgmtp.a12.dataservices.wcf:dataservices-wcf-cli:${project.prepareModels.wcfCliVersion.get()}"
+            )
+            project.dependencies.add('prepareModelsConversion',
                 "com.mgmtp.a12.devtools.plugins:prepare-models-validation-converter:${project.prepareModels.validationConverterVersion.get()}"
             )
+            if (project.prepareModels.validateDataDocuments.get()) {
+                project.dependencies.add('prepareModelsConversion',
+                    "com.mgmtp.a12.devtools.plugins:validate-data-models:${project.prepareModels.validateDataModelsVersion.get()}"
+                )
+            }
             String kernelVersion = project.prepareModels.kernelMdFacadeVersion.orNull
                     ?: detectKernelVersionFromBuildscript(project)
             if (kernelVersion != null) {
@@ -109,6 +124,7 @@ class PrepareModelsPlugin implements Plugin<Project> {
             conversionClasspath.setFrom(conversion)
 
             generateValidationCode.set(project.prepareModels.generateValidationCode)
+            validateDataDocuments.set(project.prepareModels.validateDataDocuments)
             validationCodeOutputDir.set(project.layout.buildDirectory.dir('expanded-code'))
 
             inputDir.set(project.prepareModels.inputDir)

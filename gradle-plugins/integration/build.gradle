@@ -1,0 +1,41 @@
+plugins {
+    id 'groovy'
+    id 'java-gradle-plugin'
+    id 'maven-publish'
+}
+
+apply from: "${rootDir}/gradle-plugins/plugin-common.gradle"
+
+dependencies {
+    implementation project(':gradle-plugins:build-utilities')
+
+    // Groovy's YAML support (YamlSlurper/YamlBuilder) is not part of the Groovy that
+    // Gradle bundles, so it must be declared explicitly. Used to rewrite the pnpm
+    // workspace catalogs (see PnpmCatalogRewriter).
+    implementation libs.groovy.yaml
+
+    testImplementation libs.spock.core
+    testImplementation gradleTestKit()
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+}
+
+test {
+    useJUnitPlatform()
+    testLogging {
+        events 'passed', 'skipped', 'failed'
+        exceptionFormat = 'full'
+    }
+}
+
+gradlePlugin {
+    plugins {
+        integration {
+            id = 'com.mgmtp.a12.devtools.plugins.integration'
+            displayName = 'A12 Integration Plugin'
+            description = 'Provides prepareForIntegration, buildAndTestForIntegration and publishForIntegration tasks for A12 integration builds.'
+            tags.set(['a12', 'gradle', 'plugin', 'integration', 'build', 'ci'])
+
+            implementationClass = 'com.mgmtp.a12.devtools.gradle.plugins.integration.IntegrationPlugin'
+        }
+    }
+}

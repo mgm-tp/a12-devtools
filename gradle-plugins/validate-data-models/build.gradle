@@ -1,0 +1,61 @@
+plugins {
+    id 'java-library'
+    id 'groovy'
+    id 'maven-publish'
+}
+
+apply from: "${rootDir}/gradle-plugins/plugin-common.gradle"
+
+ext {
+    // No stable 1.0.1 release exists yet; pinned to the same nightly build as
+    // PrepareModelsPlugin's dataservices-wcf-cli dependency (matching versions from the same
+    // WCF release train). Move to a released version once upstream cuts one.
+    wcfVersion = '1.0.1-build.20260729'
+    kernelMdFacadeVersion = '31.1.0'
+    rmcConversionVersion = '0.4.1'
+    jacksonDatabindVersion = '2.18.3'
+}
+
+configurations.all {
+    resolutionStrategy.capabilitiesResolution.withCapability('org.codehaus.groovy:groovy') {
+        // kernel-md-facade transitively pulls in org.codehaus.groovy (Groovy 3.x legacy packaging).
+        // Groovy 4.x re-publishes under org.apache.groovy but declares the same capability.
+        // Prefer the org.apache.groovy variant so it is compatible with spock-core 2.4-groovy-4.0.
+        def orgApache = candidates.find { it.id.module == 'groovy' && it.id.group == 'org.apache.groovy' }
+        if (orgApache) {
+            select(orgApache)
+        } else {
+            selectLargest()
+        }
+    }
+}
+
+dependencies {
+    implementation "com.mgmtp.a12.dataservices.wcf:dataservices-wcf-core:${wcfVersion}"
+
+    compileOnly "com.mgmtp.a12.kernel:kernel-md-facade:${kernelMdFacadeVersion}"
+    implementation "com.fasterxml.jackson.core:jackson-databind:${jacksonDatabindVersion}"
+    implementation "com.mgmtp.a12.rmc:conversion:${rmcConversionVersion}"
+
+    // SLF4J API for debug logging in DataDocumentValidationConverter; present at runtime transitively via Spring Boot.
+    compileOnly 'org.slf4j:slf4j-api:2.0.16'
+
+    testImplementation libs.spock.core
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+}
+
+test {
+    useJUnitPlatform()
+    testLogging {
+        events 'passed', 'skipped', 'failed'
+        exceptionFormat = 'full'
+    }
+}
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            from components.java
+        }
+    }
+}

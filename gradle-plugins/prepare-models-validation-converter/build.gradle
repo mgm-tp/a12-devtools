@@ -7,10 +7,10 @@ plugins {
 apply from: "${rootDir}/gradle-plugins/plugin-common.gradle"
 
 ext {
-    wcfVersion = '1.0.0'
-    // Must match the Spring Boot version wcf-core ${wcfVersion} brings transitively. Verify with:
-    //   gradle :gradle-plugins:prepare-models-validation-converter:dependencies --configuration runtimeClasspath
-    springBootVersion = '4.0.6'
+    // No stable 1.0.1 release exists yet; pinned to the same nightly build as
+    // PrepareModelsPlugin's dataservices-wcf-cli dependency (matching versions from the same
+    // WCF release train). Move to a released version once upstream cuts one.
+    wcfVersion = '1.0.1-build.20260729'
     kernelMdFacadeVersion = '31.1.0'
     rmcConversionVersion = '0.4.1'
 }
@@ -31,10 +31,6 @@ configurations.all {
 
 dependencies {
     implementation "com.mgmtp.a12.dataservices.wcf:dataservices-wcf-core:${wcfVersion}"
-
-    // Spring Boot, so WcfConversionLauncher can call SpringApplication.run(...). wcf-core pulls spring-boot
-    // transitively but only as `implementation`, so it is not on our compile classpath unless declared here.
-    implementation "org.springframework.boot:spring-boot-starter:${springBootVersion}"
 
     compileOnly "com.mgmtp.a12.kernel:kernel-md-facade:${kernelMdFacadeVersion}"
     implementation "com.mgmtp.a12.rmc:conversion:${rmcConversionVersion}"

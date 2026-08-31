@@ -35,6 +35,8 @@ export interface Command {
 	description: string;
 	action(...args: unknown[]): void;
 	options?: [flags: string, description?: string][];
+	arguments?: [name: string, description?: string][];
+	subCommands?: Command[];
 }
 
 export interface Config {

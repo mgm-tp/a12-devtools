@@ -76,9 +76,10 @@ describe("migrateImports", () => {
 	function testMigrateImports(
 		sourceText: string,
 		config: ImportMigrationConfiguration,
-		tsx = false
+		tsx = false,
+		extension?: string
 	): string {
-		const ext = tsx ? "tsx" : "ts";
+		const ext = extension ?? (tsx ? "tsx" : "ts");
 		const sourceFile = project.createSourceFile(
 			`test-${generateUid()}.${ext}`,
 			sourceText
@@ -1343,6 +1344,341 @@ MyDefault.render();
 
 				NewComponent.render();
 			`);
+		});
+	});
+
+	describe("aliased specifier merging", () => {
+		it("should keep both specifiers when the same name is merged under a different alias", () => {
+			const code = [
+				`import { Props } from "@scope/pkg/lib/foo";`,
+				`import { Props as BarProps } from "@scope/pkg/lib/bar";`
+			].join("\n");
+
+			const result = testMigrateImports(code, {
+				pathMigrations: [{ from: "@scope/pkg/lib/**", to: "@scope/pkg" }]
+			});
+
+			expect(result).toMatchInlineSnapshot(
+				`import { Props, Props as BarProps } from "@scope/pkg";`
+			);
+		});
+
+		it("should keep the unaliased specifier when the aliased one is merged first", () => {
+			const code = [
+				`import { Props as FooProps } from "@scope/pkg/lib/foo";`,
+				`import { Props } from "@scope/pkg/lib/bar";`
+			].join("\n");
+
+			const result = testMigrateImports(code, {
+				pathMigrations: [{ from: "@scope/pkg/lib/**", to: "@scope/pkg" }]
+			});
+
+			expect(result).toMatchInlineSnapshot(
+				`import { Props as FooProps, Props } from "@scope/pkg";`
+			);
+		});
+
+		it("should alias a renamed entity when the target name is already imported", () => {
+			const code = [
+				`import { New } from "@scope/pkg";`,
+				`import { Old } from "@scope/pkg/lib/foo";`,
+				`console.log(New, Old);`
+			].join("\n");
+
+			const result = testMigrateImports(code, {
+				entityMigrations: [
+					{
+						from: {
+							packageName: "@scope/pkg",
+							subPath: "/lib/foo",
+							entity: "Old"
+						},
+						to: { packageName: "@scope/pkg", subPath: "", entity: "New" }
+					}
+				]
+			});
+
+			expect(result).toContain("New as Old");
+		});
+
+		it("should still collapse a genuinely identical specifier", () => {
+			const code = [
+				`import { Props } from "@scope/pkg/lib/foo";`,
+				`import { Props } from "@scope/pkg/lib/bar";`
+			].join("\n");
+
+			const result = testMigrateImports(code, {
+				pathMigrations: [{ from: "@scope/pkg/lib/**", to: "@scope/pkg" }]
+			});
+
+			expect(result).toMatchInlineSnapshot(
+				`import { Props } from "@scope/pkg";`
+			);
+		});
+
+		it("should un-alias a single specifier that cannot collide", () => {
+			const code = [
+				`import { Props as FooProps } from "@scope/pkg/lib/foo";`,
+				`export type X = FooProps;`
+			].join("\n");
+
+			const result = testMigrateImports(code, {
+				entityMigrations: [
+					{
+						from: { packageName: "@scope/pkg", subPath: "/lib/foo" },
+						to: { packageName: "@scope/pkg", subPath: "" }
+					}
+				]
+			});
+
+			expect(result).toContain(`import { Props } from "@scope/pkg"`);
+			expect(result).toContain("export type X = Props;");
+			expect(result).not.toContain("FooProps");
+		});
+
+		it("should document the known un-aliasing collision of migratePathOnly", () => {
+			// KNOWN PRE-EXISTING DEFECT, tracked as a separate follow-up and deliberately
+			// not fixed on this branch: `migratePathOnly` keys the merge on the imported
+			// name while `replaceUsages` rewrites usages to that same name. When the alias
+			// collides with a local binding that already exists on the target module, the
+			// merge emits a duplicate identifier (which does not compile) and silently
+			// rebinds the second usage. The snapshot below pins the current, defective
+			// output so a change to it is noticed - it does not endorse that output.
+			const code = [
+				`import { Alpha as Props } from "@scope/pkg";`,
+				`import { Props as FooProps } from "@scope/pkg/lib/foo";`,
+				`export type A = Props;`,
+				`export type B = FooProps;`
+			].join("\n");
+
+			const result = testMigrateImports(code, {
+				entityMigrations: [
+					{
+						from: { packageName: "@scope/pkg", subPath: "/lib/foo" },
+						to: { packageName: "@scope/pkg", subPath: "" }
+					}
+				]
+			});
+
+			expect(result).toMatchInlineSnapshot(`
+				import { Alpha as Props, Props } from "@scope/pkg";
+				export type A = Props;
+				export type B = Props;
+			`);
+		});
+	});
+
+	describe("extensionless deep imports", () => {
+		const jsOnly = {
+			pathMigrations: [{ from: "@scope/pkg/lib/**/*.js", to: "@scope/pkg" }]
+		};
+
+		it("should rewrite an extensionless deep import against a .js rule", () => {
+			const code = `import { DefaultThemeType } from "@scope/pkg/lib/theme";`;
+
+			expect(testMigrateImports(code, jsOnly)).toBe(
+				`import { DefaultThemeType } from "@scope/pkg";`
+			);
+		});
+
+		it("should rewrite a folder import against a .js rule", () => {
+			const code = `import { A } from "@scope/pkg/lib/theme/flat";`;
+
+			expect(testMigrateImports(code, jsOnly)).toBe(
+				`import { A } from "@scope/pkg";`
+			);
+		});
+
+		it("should still rewrite an explicit .js deep import", () => {
+			const code = `import { Other } from "@scope/pkg/lib/other.js";`;
+
+			expect(testMigrateImports(code, jsOnly)).toBe(
+				`import { Other } from "@scope/pkg";`
+			);
+		});
+
+		it("should not rewrite a specifier outside the rule", () => {
+			const code = `import { X } from "@scope/other/lib/thing";`;
+
+			expect(testMigrateImports(code, jsOnly)).toBe(code);
+		});
+
+		it("should honour a .js exclude when the source specifier is extensionless", () => {
+			const config: ImportMigrationConfiguration = {
+				pathMigrations: [
+					{
+						from: "@scope/pkg/lib/**/*.js",
+						to: "@scope/pkg",
+						exclude: "@scope/pkg/lib/main/overview-model.js"
+					}
+				]
+			};
+
+			const excluded = `import { M } from "@scope/pkg/lib/main/overview-model";`;
+			const rewritten = `import { A } from "@scope/pkg/lib/main/other";`;
+
+			expect(testMigrateImports(excluded, config)).toBe(excluded);
+			expect(testMigrateImports(rewritten, config)).toBe(
+				`import { A } from "@scope/pkg";`
+			);
+		});
+
+		it("should take captures from the synthesised candidate that matched", () => {
+			// Matches only via the synthesised "@scope/old-package/lib/utils.js" candidate:
+			// the rule requires the .js extension the source specifier omits.
+			const code = `import { sum } from "@scope/old-package/lib/utils";`;
+
+			expect(
+				testMigrateImports(code, {
+					pathMigrations: [
+						{
+							from: "@scope/old-package/lib/*.js",
+							to: "@scope/new-package/dist/$1"
+						}
+					]
+				})
+			).toBe(`import { sum } from "@scope/new-package/dist/utils";`);
+		});
+
+		it("should not leak a synthesised /index.js suffix into a captured path", () => {
+			// Matches only via the synthesised "@scope/old/lib/index.js" candidate, so $1
+			// captures "index.js" - a suffix the source specifier never had.
+			const code = `import { a } from "@scope/old/lib";`;
+
+			expect(
+				testMigrateImports(code, {
+					pathMigrations: [{ from: "@scope/old/lib/*", to: "@scope/new/$1" }]
+				})
+			).toBe(`import { a } from "@scope/new";`);
+		});
+
+		it("should keep a literal .js suffix in the target when the source has no extension", () => {
+			// "to" has no $n placeholders at all, so the ".js" here is written by the rule
+			// author, not synthesised - it must survive even though the match itself only
+			// succeeded via the synthesised ".js" candidate.
+			const code = `import { A } from "@scope/pkg/lib/foo";`;
+
+			expect(
+				testMigrateImports(code, {
+					pathMigrations: [
+						{ from: "@scope/pkg/lib/**/*.js", to: "@scope/other/index.js" }
+					]
+				})
+			).toBe(`import { A } from "@scope/other/index.js";`);
+		});
+
+		it("should keep a literal .js suffix in the target when the match is via the synthesised /index.js candidate", () => {
+			const code = `import { A } from "@scope/pkg/lib/foo";`;
+
+			expect(
+				testMigrateImports(code, {
+					pathMigrations: [
+						{ from: "@scope/pkg/lib/**/index.js", to: "@scope/other/index.js" }
+					]
+				})
+			).toBe(`import { A } from "@scope/other/index.js";`);
+		});
+
+		it("should strip a synthesised .js suffix from a capture that spans the extension", () => {
+			// The extglob capture group spans the whole "utils.js", including the extension,
+			// while the plain "utils" specifier does not match the rule on its own - so this
+			// only matches via the synthesised ".js" candidate. `picomatch.makeRe` compiles
+			// this rule's "from" to /^(?:@scope\/old\/lib\/(([^/]*?)\.js))$/, so the
+			// synthesised ".js" candidate matches with $1 === "utils.js".
+			const code = `import { a } from "@scope/old/lib/utils";`;
+
+			expect(
+				testMigrateImports(code, {
+					pathMigrations: [
+						{ from: "@scope/old/lib/@(*.js)", to: "@scope/new/$1" }
+					]
+				})
+			).toBe(`import { a } from "@scope/new/utils";`);
+		});
+
+		it("should substitute a non-participating capture group with an empty string", () => {
+			// "@scope/old/lib/theme.js" matches with the "**" group unmatched, so $1 must
+			// not survive as a literal in the rewritten specifier.
+			const code = `import { A } from "@scope/old/lib/theme";`;
+			const result = testMigrateImports(code, {
+				pathMigrations: [
+					{ from: "@scope/old/lib/**/*.js", to: "@scope/new/$1/$2" }
+				]
+			});
+
+			expect(result).not.toContain("$1");
+			expect(result).toBe(`import { A } from "@scope/new/theme";`);
+		});
+	});
+
+	describe("non-JavaScript deep imports", () => {
+		const jsOnly: ImportMigrationConfiguration = {
+			pathMigrations: [{ from: "@scope/pkg/lib/**/*.js", to: "@scope/pkg" }]
+		};
+
+		it("should leave a side-effect .css import untouched", () => {
+			// A side-effect import has no binding, so rewriting it used to delete the
+			// whole declaration instead of merging anything.
+			const code = `import "@scope/pkg/lib/theme/basic.css";`;
+
+			expect(testMigrateImports(code, jsOnly)).toBe(code);
+		});
+
+		it("should leave a side-effect .css import untouched next to a barrel import", () => {
+			const code = [
+				`import { Theme } from "@scope/pkg";`,
+				`import "@scope/pkg/lib/theme/basic.css";`
+			].join("\n");
+
+			expect(testMigrateImports(code, jsOnly)).toBe(code);
+		});
+
+		it("should leave a .json default import untouched", () => {
+			const code = `import model from "@scope/pkg/lib/data/model.json";`;
+
+			expect(testMigrateImports(code, jsOnly)).toBe(code);
+		});
+
+		it("should not pre-empt a later rule's .css exclude", () => {
+			// The two-rule shape used by the widgets recipe: a .js rule first, then a
+			// catch-all that excludes stylesheets.
+			const config: ImportMigrationConfiguration = {
+				pathMigrations: [
+					{ from: "@scope/pkg/lib/**/*.js", to: "@scope/pkg" },
+					{
+						from: "@scope/pkg/lib/**",
+						to: "@scope/pkg",
+						exclude: "@scope/pkg/lib/**/*.css"
+					}
+				]
+			};
+
+			const excluded = `import "@scope/pkg/lib/theme/basic.css";`;
+			const rewritten = `import { A } from "@scope/pkg/lib/theme";`;
+
+			expect(testMigrateImports(excluded, config)).toBe(excluded);
+			expect(testMigrateImports(rewritten, config)).toBe(
+				`import { A } from "@scope/pkg";`
+			);
+		});
+	});
+
+	describe("declaration files", () => {
+		it("should rewrite deep imports in a .d.ts file", () => {
+			const code = [
+				`import { DefaultThemeType } from "@scope/pkg/lib/theme";`,
+				`export type T = DefaultThemeType;`
+			].join("\n");
+
+			const result = testMigrateImports(
+				code,
+				{ pathMigrations: [{ from: "@scope/pkg/lib/**", to: "@scope/pkg" }] },
+				false,
+				"d.ts"
+			);
+
+			expect(result).toContain(`from "@scope/pkg"`);
+			expect(result).not.toContain("/lib/theme");
 		});
 	});
 });
